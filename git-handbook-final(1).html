@@ -1,0 +1,3454 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git El Kitabı</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Code+Pro:wght@400;600&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* ═══════════════════════════════════════════
+           CSS CUSTOM PROPERTIES
+        ═══════════════════════════════════════════ */
+        :root {
+            --red:          #c0392b;
+            --red-light:    #e74c3c;
+            --red-muted:    #f5e6e5;
+            --black:        #0d0d0d;
+            --ink:          #1a1a1a;
+            --ink-soft:     #3a3a3a;
+            --ink-muted:    #666666;
+            --paper:        #faf9f7;
+            --paper-warm:   #f5f2ed;
+            --paper-dark:   #ede9e3;
+            --line:         #d0c9c0;
+            --line-red:     #c0392b;
+
+            --font-display: 'Playfair Display', 'Georgia', serif;
+            --font-body:    'Lora', 'Georgia', serif;
+            --font-code:    'Source Code Pro', 'Courier New', monospace;
+
+            --space-xs:   4px;
+            --space-sm:   8px;
+            --space-md:   16px;
+            --space-lg:   32px;
+            --space-xl:   64px;
+            --space-2xl:  96px;
+
+            --max-width:  780px;
+        }
+
+        /* ═══════════════════════════════════════════
+           RESET & BASE
+        ═══════════════════════════════════════════ */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--paper);
+            color: var(--ink);
+            font-size: 17px;
+            line-height: 1.85;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ═══════════════════════════════════════════
+           SIDEBAR NAVIGATION
+        ═══════════════════════════════════════════ */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 240px;
+            height: 100vh;
+            background-color: var(--black);
+            padding: var(--space-xl) var(--space-lg);
+            overflow-y: auto;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-lg);
+        }
+
+        .sidebar-logo {
+            font-family: var(--font-display);
+            font-size: 22px;
+            color: #fff;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+            padding-bottom: var(--space-lg);
+            border-bottom: 1px solid #333;
+        }
+
+        .sidebar-logo span {
+            color: var(--red-light);
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+        }
+
+        .sidebar-nav .nav-label {
+            font-family: var(--font-code);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #555;
+            padding: var(--space-md) 0 var(--space-sm) 0;
+        }
+
+        .sidebar-nav a {
+            display: block;
+            font-family: var(--font-body);
+            font-size: 13.5px;
+            color: #aaa;
+            text-decoration: none;
+            padding: 6px var(--space-sm);
+            border-left: 2px solid transparent;
+            transition: color 0.2s, border-color 0.2s;
+            line-height: 1.4;
+        }
+
+        .sidebar-nav a:hover {
+            color: #fff;
+            border-left-color: var(--red-light);
+        }
+
+        .sidebar-nav a.active {
+            color: #fff;
+            border-left-color: var(--red);
+        }
+
+        .sidebar-nav .chapter-num {
+            color: var(--red-light);
+            font-family: var(--font-code);
+            font-size: 11px;
+            margin-right: 6px;
+        }
+
+        /* ═══════════════════════════════════════════
+           MAIN CONTENT AREA
+        ═══════════════════════════════════════════ */
+        .main {
+            margin-left: 240px;
+            min-height: 100vh;
+        }
+
+        .content {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: var(--space-xl) var(--space-xl);
+        }
+
+        /* ═══════════════════════════════════════════
+           COVER / HEADER
+        ═══════════════════════════════════════════ */
+        .cover {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: var(--space-2xl) var(--space-xl);
+            max-width: var(--max-width);
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .cover::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: var(--space-xl);
+            right: var(--space-xl);
+            height: 1px;
+            background: var(--line-red);
+        }
+
+        .cover-eyebrow {
+            font-family: var(--font-code);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--red);
+            margin-bottom: var(--space-lg);
+        }
+
+        .cover-title {
+            font-family: var(--font-display);
+            font-size: clamp(52px, 8vw, 88px);
+            font-weight: 900;
+            color: var(--black);
+            line-height: 0.95;
+            letter-spacing: -3px;
+            margin-bottom: var(--space-lg);
+        }
+
+        .cover-title .accent {
+            color: var(--red);
+        }
+
+        .cover-desc {
+            font-family: var(--font-body);
+            font-size: 17px;
+            color: var(--ink-soft);
+            max-width: 480px;
+            line-height: 1.7;
+            font-style: italic;
+            margin-bottom: var(--space-xl);
+        }
+
+        .cover-meta {
+            display: flex;
+            gap: var(--space-xl);
+        }
+
+        .cover-meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .cover-meta-label {
+            font-family: var(--font-code);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--ink-muted);
+        }
+
+        .cover-meta-value {
+            font-family: var(--font-body);
+            font-size: 14px;
+            color: var(--ink);
+            font-weight: 600;
+        }
+
+        /* ═══════════════════════════════════════════
+           TABLE OF CONTENTS
+        ═══════════════════════════════════════════ */
+        .toc-section {
+            padding: var(--space-2xl) 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .section-eyebrow {
+            font-family: var(--font-code);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--red);
+            margin-bottom: var(--space-lg);
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        .toc-item {
+            padding: var(--space-md) 0;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: baseline;
+            gap: var(--space-md);
+            text-decoration: none;
+            color: inherit;
+            transition: background 0.15s;
+        }
+
+        .toc-item:nth-child(odd) {
+            padding-right: var(--space-lg);
+            border-right: 1px solid var(--line);
+        }
+
+        .toc-item:nth-child(even) {
+            padding-left: var(--space-lg);
+        }
+
+        .toc-item:hover .toc-item-title {
+            color: var(--red);
+        }
+
+        .toc-num {
+            font-family: var(--font-code);
+            font-size: 12px;
+            color: var(--red);
+            font-weight: 600;
+            flex-shrink: 0;
+            width: 24px;
+        }
+
+        .toc-item-body {
+            flex: 1;
+        }
+
+        .toc-item-title {
+            font-family: var(--font-display);
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--ink);
+            transition: color 0.15s;
+            line-height: 1.3;
+        }
+
+        .toc-item-sub {
+            font-family: var(--font-body);
+            font-size: 12px;
+            color: var(--ink-muted);
+            font-style: italic;
+            margin-top: 2px;
+        }
+
+        /* ═══════════════════════════════════════════
+           CHAPTER STRUCTURE
+        ═══════════════════════════════════════════ */
+        .chapter {
+            padding: var(--space-2xl) 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .chapter-header {
+            margin-bottom: var(--space-xl);
+            padding-bottom: var(--space-lg);
+            border-bottom: 2px solid var(--red);
+        }
+
+        .chapter-eyebrow {
+            font-family: var(--font-code);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--red);
+            margin-bottom: var(--space-md);
+        }
+
+        .chapter-title {
+            font-family: var(--font-display);
+            font-size: clamp(32px, 5vw, 48px);
+            font-weight: 900;
+            color: var(--black);
+            line-height: 1.05;
+            letter-spacing: -1.5px;
+            margin-bottom: var(--space-md);
+        }
+
+        .chapter-subtitle {
+            font-family: var(--font-body);
+            font-size: 16px;
+            color: var(--ink-soft);
+            font-style: italic;
+            max-width: 560px;
+            line-height: 1.6;
+        }
+
+        /* ═══════════════════════════════════════════
+           SECTIONS
+        ═══════════════════════════════════════════ */
+        .section {
+            margin-bottom: var(--space-xl);
+            padding-bottom: var(--space-xl);
+            border-bottom: 1px dashed var(--line);
+        }
+
+        .section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--black);
+            margin-bottom: var(--space-md);
+            line-height: 1.3;
+        }
+
+        .section p {
+            font-family: var(--font-body);
+            font-size: 16px;
+            color: var(--ink-soft);
+            margin-bottom: var(--space-md);
+            line-height: 1.85;
+        }
+
+        .section p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* ═══════════════════════════════════════════
+           CODE
+        ═══════════════════════════════════════════ */
+        .code-block {
+            position: relative;
+            background-color: var(--black);
+            border-left: 3px solid var(--red);
+            padding: var(--space-lg) var(--space-lg);
+            margin: var(--space-lg) 0;
+            font-family: var(--font-code);
+            font-size: 13.5px;
+            color: #e8e8e8;
+            white-space: pre;
+            overflow-x: auto;
+            line-height: 1.7;
+        }
+
+        .code-block .comment {
+            color: #666;
+        }
+
+        .code-block .cmd {
+            color: #e8c48a;
+        }
+
+        .code-block .flag {
+            color: #a8c7fa;
+        }
+
+        .code-block .str {
+            color: #b5ead7;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: var(--space-sm);
+            right: var(--space-sm);
+            background: transparent;
+            border: 1px solid #444;
+            color: #666;
+            font-family: var(--font-code);
+            font-size: 10px;
+            padding: 4px 10px;
+            cursor: pointer;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            border-color: var(--red);
+            color: var(--red-light);
+        }
+
+        .copy-btn.copied {
+            border-color: #4caf50;
+            color: #4caf50;
+        }
+
+        code {
+            font-family: var(--font-code);
+            font-size: 13.5px;
+            background-color: var(--paper-dark);
+            color: var(--red);
+            padding: 2px 7px;
+            border-radius: 2px;
+        }
+
+        /* ═══════════════════════════════════════════
+           CALLOUT BOXES
+        ═══════════════════════════════════════════ */
+        .note, .warning, .tip {
+            border-left: 3px solid;
+            padding: var(--space-md) var(--space-lg);
+            margin: var(--space-lg) 0;
+            font-size: 14.5px;
+        }
+
+        .note {
+            border-color: var(--red);
+            background-color: var(--red-muted);
+            color: var(--ink-soft);
+        }
+
+        .warning {
+            border-color: #e67e22;
+            background-color: #fef9f0;
+            color: #7d4e00;
+        }
+
+        .tip {
+            border-color: #27ae60;
+            background-color: #f0faf4;
+            color: #1a5c35;
+        }
+
+        .note strong,
+        .warning strong,
+        .tip strong {
+            font-family: var(--font-code);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: block;
+            margin-bottom: var(--space-xs);
+        }
+
+        .note strong   { color: var(--red); }
+        .warning strong { color: #e67e22; }
+        .tip strong     { color: #27ae60; }
+
+        /* ═══════════════════════════════════════════
+           COMMAND TABLE
+        ═══════════════════════════════════════════ */
+        .cmd-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--space-lg) 0;
+            font-size: 14px;
+        }
+
+        .cmd-table th {
+            font-family: var(--font-code);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--ink-muted);
+            text-align: left;
+            padding: var(--space-sm) var(--space-md);
+            border-bottom: 2px solid var(--line);
+        }
+
+        .cmd-table td {
+            padding: var(--space-sm) var(--space-md);
+            border-bottom: 1px dashed var(--line);
+            color: var(--ink-soft);
+            vertical-align: top;
+            line-height: 1.6;
+        }
+
+        .cmd-table td:first-child {
+            font-family: var(--font-code);
+            font-size: 13px;
+            color: var(--red);
+            white-space: nowrap;
+            padding-right: var(--space-lg);
+        }
+
+        .cmd-table tr:hover td {
+            background-color: var(--paper-warm);
+        }
+
+        /* ═══════════════════════════════════════════
+           SEARCH BAR (Stage 8)
+        ═══════════════════════════════════════════ */
+        .search-wrap {
+            position: relative;
+            margin-bottom: var(--space-md);
+        }
+
+        .search-input {
+            width: 100%;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #ccc;
+            font-family: var(--font-code);
+            font-size: 12px;
+            padding: 8px 32px 8px 10px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input::placeholder { color: #555; }
+
+        .search-input:focus { border-color: var(--red); }
+
+        .search-clear {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #555;
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1;
+            padding: 0;
+            display: none;
+        }
+
+        .search-clear.visible { display: block; }
+
+        .search-results-count {
+            font-family: var(--font-code);
+            font-size: 10px;
+            color: var(--red);
+            letter-spacing: 1px;
+            min-height: 16px;
+            margin-bottom: var(--space-sm);
+        }
+
+        .highlight-match {
+            background: rgba(192, 57, 43, 0.25);
+            outline: 1px solid var(--red);
+            border-radius: 2px;
+        }
+
+        /* ═══════════════════════════════════════════
+           MOBILE HAMBURGER (Stage 8)
+        ═══════════════════════════════════════════ */
+        .mobile-bar {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 52px;
+            background: var(--black);
+            z-index: 300;
+            align-items: center;
+            padding: 0 var(--space-md);
+            gap: var(--space-md);
+            border-bottom: 2px solid var(--red);
+        }
+
+        .hamburger {
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            padding: 4px;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: #fff;
+            transition: all 0.25s;
+            transform-origin: center;
+        }
+
+        .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        .mobile-title {
+            font-family: var(--font-display);
+            font-size: 16px;
+            font-weight: 900;
+            color: #fff;
+            flex: 1;
+        }
+
+        .mobile-title span { color: var(--red-light); }
+
+        /* ═══════════════════════════════════════════
+           DARK MODE TOGGLE (Stage 8)
+        ═══════════════════════════════════════════ */
+        .theme-toggle {
+            margin-top: auto;
+            padding-top: var(--space-lg);
+            border-top: 1px solid #222;
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            cursor: pointer;
+            font-family: var(--font-code);
+            font-size: 11px;
+            color: #555;
+            letter-spacing: 1px;
+            user-select: none;
+            transition: color 0.2s;
+        }
+
+        .theme-toggle:hover { color: #aaa; }
+
+        .toggle-track {
+            width: 32px;
+            height: 16px;
+            background: #333;
+            border-radius: 8px;
+            position: relative;
+            transition: background 0.2s;
+        }
+
+        .toggle-thumb {
+            position: absolute;
+            top: 2px; left: 2px;
+            width: 12px; height: 12px;
+            background: #666;
+            border-radius: 50%;
+            transition: left 0.2s, background 0.2s;
+        }
+
+        [data-theme="light"] .toggle-track { background: var(--red); }
+        [data-theme="light"] .toggle-thumb { left: 18px; background: #fff; }
+
+        /* ═══════════════════════════════════════════
+           LIGHT MODE OVERRIDES (Stage 8)
+        ═══════════════════════════════════════════ */
+        [data-theme="light"] {
+            --paper:      #ffffff;
+            --paper-warm: #fafafa;
+            --paper-dark: #f0f0f0;
+            --ink:        #0d0d0d;
+            --ink-soft:   #2a2a2a;
+            --ink-muted:  #555;
+            --line:       #e0e0e0;
+        }
+
+        [data-theme="light"] .sidebar {
+            background: #1a1a1a;
+        }
+
+        [data-theme="light"] .code-block {
+            background: #1e1e1e;
+        }
+
+        /* ═══════════════════════════════════════════
+           BACK TO TOP (Stage 8)
+        ═══════════════════════════════════════════ */
+        .back-to-top {
+            position: fixed;
+            bottom: var(--space-lg);
+            right: var(--space-lg);
+            width: 44px;
+            height: 44px;
+            background: var(--black);
+            border: 1px solid var(--red);
+            color: var(--red);
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.3s, transform 0.3s;
+            z-index: 200;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .back-to-top:hover {
+            background: var(--red);
+            color: #fff;
+        }
+
+        /* ═══════════════════════════════════════════
+           CHAPTER PROGRESS DOTS IN SIDEBAR (Stage 8)
+        ═══════════════════════════════════════════ */
+        .chapter-progress {
+            display: flex;
+            gap: 4px;
+            margin-top: 4px;
+            padding-left: 26px;
+        }
+
+        .chapter-progress .dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #333;
+            transition: background 0.3s;
+        }
+
+        .chapter-progress .dot.done {
+            background: var(--red);
+        }
+
+        /* ═══════════════════════════════════════════
+           SECTION ANCHOR LINKS (Stage 8)
+        ═══════════════════════════════════════════ */
+        .section-title {
+            position: relative;
+        }
+
+        .section-title .anchor {
+            position: absolute;
+            left: -24px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            color: var(--red);
+            opacity: 0;
+            text-decoration: none;
+            transition: opacity 0.15s;
+            font-family: var(--font-code);
+        }
+
+        .section:hover .section-title .anchor {
+            opacity: 1;
+        }
+
+        /* ═══════════════════════════════════════════
+           KEYBOARD SHORTCUT HINT (Stage 8)
+        ═══════════════════════════════════════════ */
+        .kbd-hint {
+            font-family: var(--font-code);
+            font-size: 10px;
+            color: #444;
+            margin-top: auto;
+            padding-top: var(--space-sm);
+            line-height: 2;
+        }
+
+        kbd {
+            display: inline-block;
+            background: #222;
+            border: 1px solid #444;
+            border-radius: 3px;
+            padding: 1px 5px;
+            font-size: 10px;
+            color: #888;
+        }
+
+        /* ═══════════════════════════════════════════
+           PRINT STYLES (Stage 8)
+        ═══════════════════════════════════════════ */
+        @media print {
+            .sidebar, .progress-strip, .back-to-top,
+            .mobile-bar, .copy-btn { display: none !important; }
+            .main { margin-left: 0; }
+            .chapter { page-break-before: always; }
+            .code-block { border: 1px solid #ccc; background: #f9f9f9 !important;
+                          color: #000 !important; }
+            body { font-size: 12pt; }
+        }
+
+        /* ═══════════════════════════════════════════
+           LANGUAGE TOGGLE
+        ═══════════════════════════════════════════ */
+        .lang-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding-top: var(--space-sm);
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: 1px solid #333;
+            color: #555;
+            font-family: var(--font-code);
+            font-size: 11px;
+            padding: 4px 10px;
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+            border-radius: 2px;
+        }
+
+        .lang-btn:hover { border-color: #555; color: #aaa; }
+
+        .lang-btn.active {
+            background: var(--red);
+            border-color: var(--red);
+            color: #fff;
+        }
+
+        .lang-sep {
+            color: #333;
+            font-family: var(--font-code);
+            font-size: 11px;
+        }
+        .progress-strip {
+            position: fixed;
+            top: 0;
+            left: 240px;
+            right: 0;
+            height: 3px;
+            background: var(--line);
+            z-index: 200;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--red);
+            width: 0%;
+            transition: width 0.1s;
+        }
+
+        /* ═══════════════════════════════════════════
+           FOOTER
+        ═══════════════════════════════════════════ */
+        .handbook-footer {
+            padding: var(--space-xl) 0 var(--space-2xl) 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--font-code);
+            font-size: 11px;
+            color: var(--ink-muted);
+            letter-spacing: 1px;
+        }
+
+        .footer-brand {
+            color: var(--red);
+            font-weight: 600;
+        }
+
+        /* ═══════════════════════════════════════════
+           RESPONSIVE
+        ═══════════════════════════════════════════ */
+        @media (max-width: 900px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+                display: flex !important;
+                top: 52px;
+                height: calc(100vh - 52px);
+            }
+
+            .sidebar.sidebar-open {
+                transform: translateX(0);
+            }
+
+            .mobile-bar {
+                display: flex;
+            }
+
+            .main {
+                margin-left: 0;
+                padding-top: 52px;
+            }
+
+            .progress-strip {
+                left: 0;
+            }
+
+            .toc-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .toc-item:nth-child(odd) {
+                padding-right: 0;
+                border-right: none;
+            }
+
+            .toc-item:nth-child(even) {
+                padding-left: 0;
+            }
+
+            .cover {
+                min-height: auto;
+                padding: var(--space-xl) var(--space-lg);
+            }
+
+            .content {
+                padding: var(--space-lg);
+            }
+
+            .back-to-top {
+                bottom: var(--space-md);
+                right: var(--space-md);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ══ READING PROGRESS BAR ══ -->
+    <div class="progress-strip">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- ══ MOBILE BAR ══ -->
+    <div class="mobile-bar" id="mobileBar">
+        <button class="hamburger" id="hamburger" aria-label="Menü">
+            <span></span><span></span><span></span>
+        </button>
+        <div class="mobile-title">Git <span>El Kitabı</span></div>
+        <div style="font-family:var(--font-code);font-size:10px;color:#555;" id="mobileProgress">0%</div>
+    </div>
+
+    <!-- ══ SIDEBAR ══ -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            Git<br><span>El Kitabı</span>
+        </div>
+
+        <!-- Search -->
+        <div>
+            <div class="search-wrap">
+                <input class="search-input" id="searchInput" type="text" placeholder="Ara... (/ kısayolu)">
+                <button class="search-clear" id="searchClear">✕</button>
+            </div>
+            <div class="search-results-count" id="searchCount"></div>
+        </div>
+
+        <ul class="sidebar-nav">
+            <li class="nav-label" data-i18n="nav-contents">İçindekiler</li>
+            <li><a href="#cover" data-i18n="nav-cover">Kapak</a></li>
+            <li><a href="#toc" data-i18n="nav-toc">İçindekiler</a></li>
+            <li class="nav-label" data-i18n="nav-chapters">Bölümler</li>
+            <li>
+                <a href="#bolum-1">
+                    <span class="chapter-num">01</span> <span data-i18n="ch1">Git'e Giriş</span>
+                </a>
+                <div class="chapter-progress" id="prog-1">
+                    <div class="dot"></div><div class="dot"></div>
+                    <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                </div>
+            </li>
+            <li>
+                <a href="#bolum-2">
+                    <span class="chapter-num">02</span> <span data-i18n="ch2">Temel Komutlar</span>
+                </a>
+                <div class="chapter-progress" id="prog-2">
+                    <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                    <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                    <div class="dot"></div><div class="dot"></div>
+                </div>
+            </li>
+            <li>
+                <a href="#bolum-3">
+                    <span class="chapter-num">03</span> <span data-i18n="ch3">Uzak Depolar</span>
+                </a>
+                <div class="chapter-progress" id="prog-3">
+                    <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                    <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                </div>
+            </li>
+            <li>
+                <a href="#bolum-4">
+                    <span class="chapter-num">04</span> <span data-i18n="ch4">Dallar ve Birleştirme</span>
+                </a>
+                <div class="chapter-progress" id="prog-4">
+                    <div class="dot"></div><div class="dot"></div>
+                    <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                </div>
+            </li>
+            <li>
+                <a href="#bolum-5">
+                    <span class="chapter-num">05</span> <span data-i18n="ch5">İleri Teknikler</span>
+                </a>
+                <div class="chapter-progress" id="prog-5">
+                    <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                    <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                </div>
+            </li>
+            <li>
+                <a href="#bolum-6">
+                    <span class="chapter-num">06</span> <span data-i18n="ch6">Profesyonel Akışlar</span>
+                </a>
+                <div class="chapter-progress" id="prog-6">
+                    <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                    <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                    <div class="dot"></div><div class="dot"></div>
+                </div>
+            </li>
+        </ul>
+
+        <div class="kbd-hint">
+            <kbd>/</kbd> <span data-i18n="search">ara</span> &nbsp;·&nbsp; <kbd>Esc</kbd> <span data-i18n="close">kapat</span><br>
+            <kbd>↑↓</kbd> <span data-i18n="chapters">bölümler arası</span>
+        </div>
+
+        <!-- Lang toggle -->
+        <div class="lang-toggle">
+            <button class="lang-btn active" id="btnTR" onclick="setLang('tr')">TR</button>
+            <span class="lang-sep">·</span>
+            <button class="lang-btn" id="btnEN" onclick="setLang('en')">EN</button>
+        </div>
+
+        <!-- Theme toggle -->
+        <div class="theme-toggle" id="themeToggle" role="button" tabindex="0" aria-label="Tema değiştir">
+            <div class="toggle-track"><div class="toggle-thumb"></div></div>
+            <span id="themeLabel">KOYU MOD</span>
+        </div>
+    </aside>
+
+    <!-- ══ BACK TO TOP ══ -->
+    <button class="back-to-top" id="backToTop" aria-label="Başa dön">↑</button>
+
+    <!-- ══ MAIN ══ -->
+    <main class="main">
+        <div class="content">
+
+            <!-- ── COVER ── -->
+            <section class="cover" id="cover">
+                <p class="cover-eyebrow">Kapsamlı Teknik Rehber</p>
+                <h1 class="cover-title">
+                    Git<br>
+                    <span class="accent">El</span><br>
+                    Kitabı
+                </h1>
+                <p class="cover-desc">
+                    Temel kavramlardan profesyonel iş akışlarına kadar,
+                    adım adım ve pratik örneklerle Git'i öğrenin.
+                </p>
+                <div class="cover-meta">
+                    <div class="cover-meta-item">
+                        <span class="cover-meta-label">Bölüm Sayısı</span>
+                        <span class="cover-meta-value">6 Bölüm</span>
+                    </div>
+                    <div class="cover-meta-item">
+                        <span class="cover-meta-label">Seviye</span>
+                        <span class="cover-meta-value">Başlangıç → Uzman</span>
+                    </div>
+                    <div class="cover-meta-item">
+                        <span class="cover-meta-label">Dil</span>
+                        <span class="cover-meta-value">Türkçe</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── TABLE OF CONTENTS ── -->
+            <section class="toc-section" id="toc">
+                <p class="section-eyebrow">İçindekiler</p>
+                <div class="toc-grid">
+                    <a class="toc-item" href="#bolum-1">
+                        <span class="toc-num">01</span>
+                        <div class="toc-item-body">
+                            <div class="toc-item-title">Git'e Giriş</div>
+                            <div class="toc-item-sub">Versiyon kontrolü, kurulum, çalışma mantığı</div>
+                        </div>
+                    </a>
+                    <a class="toc-item" href="#bolum-2">
+                        <span class="toc-num">02</span>
+                        <div class="toc-item-body">
+                            <div class="toc-item-title">Temel Komutlar</div>
+                            <div class="toc-item-sub">init, add, commit, log, diff</div>
+                        </div>
+                    </a>
+                    <a class="toc-item" href="#bolum-3">
+                        <span class="toc-num">03</span>
+                        <div class="toc-item-body">
+                            <div class="toc-item-title">Uzak Depolar</div>
+                            <div class="toc-item-sub">GitHub, clone, push, pull, fetch</div>
+                        </div>
+                    </a>
+                    <a class="toc-item" href="#bolum-4">
+                        <span class="toc-num">04</span>
+                        <div class="toc-item-body">
+                            <div class="toc-item-title">Dallar ve Birleştirme</div>
+                            <div class="toc-item-sub">Branch, merge, conflict çözümü</div>
+                        </div>
+                    </a>
+                    <a class="toc-item" href="#bolum-5">
+                        <span class="toc-num">05</span>
+                        <div class="toc-item-body">
+                            <div class="toc-item-title">İleri Teknikler</div>
+                            <div class="toc-item-sub">Rebase, stash, cherry-pick, reset</div>
+                        </div>
+                    </a>
+                    <a class="toc-item" href="#bolum-6">
+                        <span class="toc-num">06</span>
+                        <div class="toc-item-body">
+                            <div class="toc-item-title">Profesyonel Akışlar</div>
+                            <div class="toc-item-sub">Git Flow, hooks, submodules, LFS</div>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- ══════════════════════════════════
+                 CHAPTER PLACEHOLDERS (Stage 1)
+                 Her bölüm sonraki stage'lerde doldurulacak
+            ══════════════════════════════════ -->
+
+            <!-- ══════════════════════════════════════════ -->
+            <!-- BÖLÜM 1 — GİT'E GİRİŞ (Stage 2)         -->
+            <!-- ══════════════════════════════════════════ -->
+            <div class="chapter" id="bolum-1">
+
+                <div class="chapter-header">
+                    <p class="chapter-eyebrow">Bölüm 01</p>
+                    <h2 class="chapter-title">Git'e Giriş</h2>
+                    <p class="chapter-subtitle">
+                        Versiyon kontrolü nedir, neden gereklidir ve Git dünyasına ilk adım
+                    </p>
+                </div>
+
+                <!-- 1.1 Versiyon Kontrolü Nedir? -->
+                <div class="section">
+                    <h3 class="section-title">1.1 — Versiyon Kontrolü Nedir?</h3>
+                    <p>
+                        Bir proje üzerinde çalışırken kendinizi şu durumda bulmuş olabilirsiniz:
+                        <code>rapor_final.docx</code>, <code>rapor_final_v2.docx</code>,
+                        <code>rapor_final_SON.docx</code>, <code>rapor_final_SON_gercekten.docx</code>…
+                        Bu kaosa çözüm olarak geliştirilen <strong>Versiyon Kontrol Sistemleri (VKS)</strong>,
+                        dosyalarınızdaki her değişikliği tarihçesiyle birlikte kayıt altına alır.
+                        İstediğiniz zaman geriye dönebilir, kimin ne değiştirdiğini görebilir,
+                        paralel olarak farklı özellikler üzerinde çalışabilirsiniz.
+                    </p>
+                    <p>
+                        VKS'lerin üç nesli vardır:
+                    </p>
+
+                    <table class="cmd-table">
+                        <thead>
+                            <tr>
+                                <th>Nesil</th>
+                                <th>Örnek Sistemler</th>
+                                <th>Temel Özellik</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Yerel</td>
+                                <td>RCS</td>
+                                <td>Değişiklikler yalnızca kendi bilgisayarınızda tutulur</td>
+                            </tr>
+                            <tr>
+                                <td>Merkezi</td>
+                                <td>SVN, CVS</td>
+                                <td>Tek bir merkezi sunucu; sunucu çökerse tarihçe gider</td>
+                            </tr>
+                            <tr>
+                                <td>Dağıtık</td>
+                                <td>Git, Mercurial</td>
+                                <td>Her kopya tam bir depodur; ağ bağlantısı gerekmez</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p>
+                        Git <strong>dağıtık</strong> bir sistemdir. Bu, deponun tüm tarihçesinin
+                        hem sizin bilgisayarınızda hem de sunucuda eksiksiz bulunduğu anlamına gelir.
+                        Sunucu çökse bile hiçbir şey kaybetmezsiniz.
+                    </p>
+                </div>
+
+                <!-- 1.2 Git'in Kısa Tarihi -->
+                <div class="section">
+                    <h3 class="section-title">1.2 — Git'in Kısa Tarihi</h3>
+                    <p>
+                        2005 yılına kadar Linux kernel topluluğu, kodlarını yönetmek için
+                        <strong>BitKeeper</strong> adlı ticari bir araç kullanıyordu. Ancak BitKeeper
+                        lisans anlaşmazlıkları nedeniyle ücretsiz kullanımını sonlandırınca,
+                        Linux'un yaratıcısı <strong>Linus Torvalds</strong> kolları sıvadı ve
+                        sadece birkaç haftada Git'i yazdı.
+                    </p>
+                    <p>
+                        Torvalds'ın tasarım hedefleri netti: hız, basit yapı, güçlü dal (branch) desteği,
+                        tam dağıtık çalışma ve büyük projeleri (Linux kernel gibi) verimli yönetebilme.
+                        Git bu hedeflerin hepsini karşıladı ve zamanla dünyanın en yaygın kullanılan
+                        versiyon kontrol sistemine dönüştü. Bugün GitHub, GitLab ve Bitbucket gibi
+                        platformlar üzerinden milyonlarca proje Git ile yönetilmektedir.
+                    </p>
+
+                    <div class="note">
+                        <strong>Not</strong>
+                        "Git" İngiliz argosunda "aptal, beceriksiz biri" anlamına gelir.
+                        Torvalds bu ismi bizzat koydu ve "kendi adını her şeye veren ben; bu sefer
+                        kötü bir şeye verdim" diye espri yaptı.
+                    </div>
+                </div>
+
+                <!-- 1.3 Kurulum ve İlk Ayarlar -->
+                <div class="section">
+                    <h3 class="section-title">1.3 — Kurulum ve İlk Ayarlar</h3>
+                    <p>
+                        Git'i kullanmaya başlamadan önce sisteminize kurmanız ve kimliğinizi
+                        tanımlamanız gerekir. Aşağıda üç işletim sistemi için kurulum komutları yer almaktadır.
+                    </p>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button><span class="comment"># Linux (Debian / Ubuntu)</span>
+<span class="cmd">sudo apt</span> update <span class="flag">&amp;&amp;</span> <span class="cmd">sudo apt</span> install git
+
+<span class="comment"># macOS (Homebrew ile)</span>
+<span class="cmd">brew</span> install git
+
+<span class="comment"># Windows — git-scm.com adresinden yükleyici indirin</span>
+<span class="comment"># veya winget ile:</span>
+<span class="cmd">winget</span> install <span class="flag">--id</span> Git.Git</div>
+
+                    <p>
+                        Kurulum tamamlandıktan sonra yapmanız gereken ilk şey Git'e kim olduğunuzu
+                        söylemektir. Bu bilgiler her commit'e otomatik olarak eklenir.
+                    </p>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button><span class="comment"># Kullanıcı adı ve e-posta ayarı (zorunlu)</span>
+<span class="cmd">git config</span> <span class="flag">--global</span> user.name  <span class="str">"Adınız Soyadınız"</span>
+<span class="cmd">git config</span> <span class="flag">--global</span> user.email <span class="str">"email@example.com"</span>
+
+<span class="comment"># Varsayılan metin editörünü ayarlama</span>
+<span class="cmd">git config</span> <span class="flag">--global</span> core.editor <span class="str">"code --wait"</span>   <span class="comment"># VS Code</span>
+<span class="cmd">git config</span> <span class="flag">--global</span> core.editor <span class="str">"nano"</span>           <span class="comment"># Nano</span>
+
+<span class="comment"># Tüm ayarları listele ve doğrula</span>
+<span class="cmd">git config</span> <span class="flag">--list</span></div>
+
+                    <p>
+                        <code>--global</code> bayrağı bu ayarların sistemdeki tüm projeler için
+                        geçerli olduğu anlamına gelir. Ayarlar <code>~/.gitconfig</code> dosyasında saklanır.
+                        Belirli bir proje için farklı bir kimlik kullanmak istiyorsanız,
+                        proje klasörü içinde <code>--global</code> yerine <code>--local</code> kullanın.
+                    </p>
+
+                    <div class="tip">
+                        <strong>İpucu</strong>
+                        Varsayılan dal adını <code>main</code> olarak ayarlamak artık yaygın bir pratik
+                        haline geldi. Bunu şimdi yapın:
+                        <code>git config --global init.defaultBranch main</code>
+                    </div>
+                </div>
+
+                <!-- 1.4 Git'in Çalışma Mantığı -->
+                <div class="section">
+                    <h3 class="section-title">1.4 — Git'in Çalışma Mantığı</h3>
+                    <p>
+                        Git'i anlamanın en kritik adımı şudur: Git, dosyalar arasındaki
+                        <em>farkları</em> değil, dosyaların <strong>anlık görüntülerini (snapshot)</strong>
+                        saklar. Her commit, o anki projenizin tam bir fotoğrafıdır.
+                    </p>
+                    <p>
+                        Git'te her değişiklik üç farklı aşamadan geçer:
+                    </p>
+
+                    <!-- ASCII Diyagram -->
+                    <div class="code-block">  ┌─────────────────────┐     git add     ┌──────────────────────┐     git commit     ┌──────────────────┐
+  │   Working Directory  │  ─────────────▶  │    Staging Area      │  ────────────────▶  │   Repository     │
+  │   (Çalışma Dizini)   │                  │    (Sahne / Index)   │                     │   (.git klasörü) │
+  │                      │  ◀─────────────  │                      │                     │                  │
+  │  Dosyaları düzenle   │   git restore    │  Commit'e hazır olan │                     │  Kalıcı tarihçe  │
+  │  ve kaydet           │                  │  değişiklikler       │                     │  saklanır        │
+  └─────────────────────┘                  └──────────────────────┘                     └──────────────────┘</div>
+
+                    <table class="cmd-table">
+                        <thead>
+                            <tr>
+                                <th>Alan</th>
+                                <th>Nerede?</th>
+                                <th>Ne içerir?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Working Directory</td>
+                                <td>Proje klasörünüz</td>
+                                <td>Üzerinde çalıştığınız dosyalar — kaydedilmiş ya da değil</td>
+                            </tr>
+                            <tr>
+                                <td>Staging Area</td>
+                                <td><code>.git/index</code></td>
+                                <td>Bir sonraki commit'e dahil edilecek değişiklikler</td>
+                            </tr>
+                            <tr>
+                                <td>Repository</td>
+                                <td><code>.git/</code> klasörü</td>
+                                <td>Tüm commit geçmişi ve meta veri</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p>
+                        <strong>Staging Area neden var?</strong> Çünkü bazen bir oturumda birden fazla
+                        şeyi değiştirirsiniz ama hepsini tek bir commit'e koymak istemezsiniz.
+                        Staging Area size seçicilik hakkı tanır: "Bu değişikliği şimdi commit'le,
+                        şunu henüz değil."
+                    </p>
+
+                    <div class="warning">
+                        <strong>Dikkat</strong>
+                        <code>.git/</code> klasörünü asla elle silmeyin veya düzenlemeyin.
+                        Bu klasör projenizin tüm tarihçesini içerir. Silerseniz her şeyi kaybedersiniz.
+                    </div>
+                </div>
+
+                <!-- 1.5 Bu Bölümde Öğrendikleriniz -->
+                <div class="section">
+                    <h3 class="section-title">1.5 — Özet</h3>
+                    <table class="cmd-table">
+                        <thead>
+                            <tr>
+                                <th>Konu</th>
+                                <th>Önemli Nokta</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Versiyon Kontrolü</td>
+                                <td>Değişiklikleri zaman damgasıyla saklar; geri dönmeyi mümkün kılar</td>
+                            </tr>
+                            <tr>
+                                <td>Git'in Yapısı</td>
+                                <td>Dağıtık: her kopya tam bir depodur, sunucuya bağımlı değilsiniz</td>
+                            </tr>
+                            <tr>
+                                <td>İlk Kurulum</td>
+                                <td><code>git config --global user.name</code> ve <code>user.email</code> şart</td>
+                            </tr>
+                            <tr>
+                                <td>Üç Alan</td>
+                                <td>Working Directory → Staging Area → Repository akışını ezberleyin</td>
+                            </tr>
+                            <tr>
+                                <td>Snapshot Modeli</td>
+                                <td>Git fark değil, anlık görüntü saklar — bu çok önemli bir ayrım</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <!-- ══════════════════════════════════════════ -->
+            <!-- BÖLÜM 2 — TEMEL KOMUTLAR (Stage 3)       -->
+            <!-- ══════════════════════════════════════════ -->
+            <div class="chapter" id="bolum-2">
+
+                <div class="chapter-header">
+                    <p class="chapter-eyebrow">Bölüm 02</p>
+                    <h2 class="chapter-title">Temel Komutlar</h2>
+                    <p class="chapter-subtitle">
+                        Günlük Git kullanımının bel kemiği — init, add, commit, log ve daha fazlası
+                    </p>
+                </div>
+
+                <!-- 2.1 git init -->
+                <div class="section">
+                    <h3 class="section-title">2.1 — Depo Başlatma: <code>git init</code></h3>
+                    <p>
+                        Her şey bir <code>git init</code> komutuyla başlar. Bu komut, bulunduğunuz
+                        klasörü bir Git deposuna dönüştürür ve içinde <code>.git/</code> adlı
+                        gizli bir klasör oluşturur. Tüm versiyon tarihçesi bu klasörde saklanır.
+                    </p>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button><span class="comment"># Mevcut klasörü depoya dönüştür</span>
+<span class="cmd">git init</span>
+
+<span class="comment"># Yeni klasör oluştur ve içini depoya dönüştür</span>
+<span class="cmd">git init</span> proje-adi
+
+<span class="comment"># İnit sonrası .git klasörünün varlığını doğrula</span>
+<span class="cmd">ls</span> <span class="flag">-la</span>   <span class="comment"># .git görünmeliydi</span></div>
+
+                    <p>
+                        <code>.git/</code> klasörünün içinde ne var? Kısaca: her şey.
+                        Commit nesneleri, dal referansları, konfigürasyon dosyası, hook'lar…
+                        Bu klasörü silmek deponuzu sıradan bir klasöre dönüştürür ve tüm tarihçeyi yok eder.
+                    </p>
+
+                    <div class="note">
+                        <strong>Not</strong>
+                        Zaten var olan bir klasörü <code>git init</code> ile başlatmak güvenlidir —
+                        mevcut dosyalarınıza dokunmaz, sadece <code>.git/</code> ekler.
+                    </div>
+                </div>
+
+                <!-- 2.2 git status -->
+                <div class="section">
+                    <h3 class="section-title">2.2 — Durumu Kontrol Etme: <code>git status</code></h3>
+                    <p>
+                        Git kullanırken en sık çalıştıracağınız komuttur. Hangi dosyaların
+                        değiştiğini, hangilerinin sahnelendiğini (staged), hangilerinin
+                        Git tarafından hiç takip edilmediğini gösterir.
+                    </p>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button><span class="cmd">git status</span>
+
+<span class="comment"># Daha kısa çıktı için</span>
+<span class="cmd">git status</span> <span class="flag">-s</span></div>
+
+                    <p>
+                        <code>git status</code> çıktısında karşılaşacağınız durumlar:
+                    </p>
+
+                    <table class="cmd-table">
+                        <thead>
+                            <tr>
+                                <th>Durum</th>
+                                <th>Anlamı</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Untracked files</td>
+                                <td>Git'in hiç haberi olmayan yeni dosyalar</td>
+                            </tr>
+                            <tr>
+                                <td>Changes not staged</td>
+                                <td>Takip edilen ama henüz sahnelenmeyen değişiklikler</td>
+                            </tr>
+                            <tr>
+                                <td>Changes to be committed</td>
+                                <td>Sahnelenmiş, bir sonraki commit'e girecek değişiklikler</td>
+                            </tr>
+                            <tr>
+                                <td>nothing to commit</td>
+                                <td>Her şey temiz, kaydedilecek değişiklik yok</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 2.3 git add -->
+                <div class="section">
+                    <h3 class="section-title">2.3 — Değişiklikleri Sahnelemek: <code>git add</code></h3>
+                    <p>
+                        Working Directory'deki değişikliklerinizi Staging Area'ya (sahne) taşır.
+                        Commit'e neyin gireceğine siz karar verirsiniz — bu seçicilik güçtür.
+                    </p>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button><span class="comment"># Tek bir dosyayı sahneye al</span>
+<span class="cmd">git add</span> index.html
+
+<span class="comment"># Belirli bir klasörü sahneye al</span>
+<span class="cmd">git add</span> src/
+
+<span class="comment"># Tüm değişiklikleri sahneye al</span>
+<span class="cmd">git add</span> .
+
+<span class="comment"># Hangi parçaların sahneleneceğini tek tek seç (interaktif)</span>
+<span class="cmd">git add</span> <span class="flag">-p</span></div>
+
+                    <p>
+                        <code>git add -p</code> (patch) komutu özellikle güçlüdür: aynı dosyadaki
+                        farklı değişiklikleri ayrı ayrı incelemenizi ve hangilerini
+                        sahneleyeceğinizi seçmenizi sağlar. Büyük değişiklik setlerini küçük,
+                        anlamlı commit'lere bölmek istediğinizde vazgeçilmezdir.
+                    </p>
+
+                    <div class="tip">
+                        <strong>İpucu</strong>
+                        <code>git add .</code> ile tüm değişiklikleri sahnelemeden önce
+                        <code>git status</code> ile ne eklediğinizi kontrol edin.
+                        İstemeden büyük binary dosyalar veya hassas bilgiler sahneliyebilirsiniz.
+                    </div>
+                </div>
+
+                <!-- 2.4 git commit -->
+                <div class="section">
+                    <h3 class="section-title">2.4 — Değişiklikleri Kaydetmek: <code>git commit</code></h3>
+                    <p>
+                        Commit, Staging Area'daki değişikliklerin depoya kalıcı olarak kaydedilmesidir.
+                        Her commit'in benzersiz bir SHA-1 hash'i vardır (örn: <code>a3f9c2d</code>)
+                        ve bu hash değişmez — Git'in güvenilirliğinin temeli budur.
+                    </p>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button><span class="comment"># Mesajla commit</span>
+<span class="cmd">git commit</span> <span class="flag">-m</span> <span class="str">"feat: kullanıcı giriş formu eklendi"</span>
+
+<span class="comment"># Editörde uzun mesaj yaz</span>
+<span class="cmd">git commit</span>
+
+<span class="comment"># Takip edilen dosyaları sahneleyip commit et (git add + commit)</span>
+<span class="cmd">git commit</span> <span class="flag">-am</span> <span class="str">"fix: hata mesajı düzeltildi"</span>
+
+<span class="comment"># Son commit mesajını veya içeriğini değiştir</span>
+<span class="cmd">git commit</span> <span class="flag">--amend</span></div>
+
+                    <p>
+                        <strong>İyi bir commit mesajı nasıl yazılır?</strong> Dünyada yaygınlaşan
+                        <em>Conventional Commits</em> standardı şu formatı önerir:
+                    </p>
+
+                    <div class="code-block"><span class="comment"># Format: &lt;tip&gt;: &lt;kısa açıklama&gt;</span>
+
+<span class="str">feat</span>: yeni özellik eklendi
+<span class="str">fix</span>: hata düzeltildi
+<span class="str">docs</span>: dokümantasyon güncellendi
+<span class="str">style</span>: kod biçimlendirmesi (mantık değişikliği yok)
+<span class="str">refactor</span>: kod yeniden yapılandırıldı
+<span class="str">test</span>: test eklendi veya düzenlendi
+<span class="str">chore</span>: yapılandırma, bağımlılık güncellemesi</div>
+
+                    <p>
+                        <strong>Atomic commit prensibi:</strong> Her commit tek bir iş yapmalıdır.
+                        "Birkaç şeyi düzelttim" diye yazılan commit'ler ileride tarihçeyi
+                        anlamayı zorlaştırır. "Hata düzelt, yeni özellik ekle, CSS güncelle"
+                        üç farklı commit olmalıdır.
+                    </p>
+
+                    <div class="warning">
+                        <strong>Dikkat</strong>
+                        <code>git commit --amend</code> son commit'i değiştirir.
+                        Bu commit zaten uzak sunucuya push edilmişse <strong>asla amend etmeyin</strong>
+                        — ekip arkadaşlarınızın tarihçesi bozulur.
+                    </div>
+                </div>
+
+                <!-- 2.5 git log -->
+                <div class="section">
+                    <h3 class="section-title">2.5 — Geçmişi Görüntülemek: <code>git log</code></h3>
+                    <p>
+                        Deponun commit tarihçesini görüntüler. Varsayılan çıktı oldukça ayrıntılıdır;
+                        bayraklar ile istediğiniz formata getirebilirsiniz.
+                    </p>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button><span class="comment"># Standart log</span>
+<span class="cmd">git log</span>
+
+<span class="comment"># Her commit tek satırda</span>
+<span class="cmd">git log</span> <span class="flag">--oneline</span>
+
+<span class="comment"># Dal yapısını grafiksel göster</span>
+<span class="cmd">git log</span> <span class="flag">--oneline --graph --all</span>
+
+<span class="comment"># Belirli bir yazarın commit'leri</span>
+<span class="cmd">git log</span> <span class="flag">--author=</span><span class="str">"Enes"</span>
+
+<span class="comment"># Son 5 commit</span>
+<span class="cmd">git log</span> <span class="flag">-5</span>
+
+<span class="comment"># Belirli tarihten sonraki commit'ler</span>
+<span class="cmd">git log</span> <span class="flag">--since=</span><span class="str">"2024-01-01"</span>
+
+<span class="comment"># Belirli bir commit'in detaylarını gör</span>
+<span class="cmd">git show</span> a3f9c2d</div>
+
+                    <p>
+                        Çok kullandığınız log formatını alias olarak kaydedebilirsiniz:
+                    </p>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button><span class="cmd">git config</span> <span class="flag">--global</span> alias.lg <span class="str">"log --oneline --graph --all --decorate"</span>
+<span class="comment"># Artık sadece:</span>
+<span class="cmd">git lg</span></div>
+                </div>
+
+                <!-- 2.6 git diff -->
+                <div class="section">
+                    <h3 class="section-title">2.6 — Değişiklikleri Karşılaştırmak: <code>git diff</code></h3>
+                    <p>
+                        Dosyalar arasındaki farkları satır satır gösterir.
+                        Neyi commit etmek üzere olduğunuzu anlamak için son derece kullanışlıdır.
+                    </p>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button><span class="comment"># Working directory ile staging arasındaki fark</span>
+<span class="cmd">git diff</span>
+
+<span class="comment"># Staged (sahnelenen) değişiklikler ile son commit arasındaki fark</span>
+<span class="cmd">git diff</span> <span class="flag">--staged</span>
+
+<span class="comment"># İki commit arasındaki fark</span>
+<span class="cmd">git diff</span> abc123 def456
+
+<span class="comment"># İki dal arasındaki fark</span>
+<span class="cmd">git diff</span> main feature/login</div>
+
+                    <div class="note">
+                        <strong>Not</strong>
+                        <code>git diff</code> çıktısında <code>+</code> ile başlayan satırlar
+                        eklenenler, <code>-</code> ile başlayanlar silinenleri gösterir.
+                        Kırmızı = silinen, yeşil = eklenen (terminal renkleri aktifse).
+                    </div>
+                </div>
+
+                <!-- 2.7 Dosya İşlemleri -->
+                <div class="section">
+                    <h3 class="section-title">2.7 — Dosya İşlemleri</h3>
+                    <p>
+                        Dosyaları silmek, taşımak veya değişiklikleri geri almak için
+                        Git'in kendi komutlarını kullanmak önemlidir — böylece Git bu
+                        değişiklikleri otomatik olarak takip eder.
+                    </p>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button><span class="comment"># Dosyayı hem diskten hem de Git'ten sil</span>
+<span class="cmd">git rm</span> gereksiz-dosya.txt
+
+<span class="comment"># Dosyayı Git'ten kaldır ama diskte bırak (.gitignore için ideal)</span>
+<span class="cmd">git rm</span> <span class="flag">--cached</span> hassas-bilgi.env
+
+<span class="comment"># Dosyayı yeniden adlandır veya taşı</span>
+<span class="cmd">git mv</span> eski-ad.txt yeni-ad.txt
+
+<span class="comment"># Çalışma dizinindeki değişikliği geri al (staged değilse)</span>
+<span class="cmd">git restore</span> degistigim-dosya.txt
+
+<span class="comment"># Sahnelemeyi geri al (commit etme ama unstage yap)</span>
+<span class="cmd">git restore</span> <span class="flag">--staged</span> yanlis-sahnelenen.txt
+
+<span class="comment"># Takip edilmeyen dosyaları temizle (dikkatli kullan!)</span>
+<span class="cmd">git clean</span> <span class="flag">-fd</span></div>
+
+                    <div class="warning">
+                        <strong>Dikkat</strong>
+                        <code>git restore</code> ve <code>git clean</code> ile yapılan değişiklikler
+                        geri alınamaz. Emin olmadan çalıştırmayın.
+                        <code>git clean -n</code> ile önce neyin silineceğini önizleyin.
+                    </div>
+                </div>
+
+                <!-- 2.8 Özet -->
+                <div class="section">
+                    <h3 class="section-title">2.8 — Özet ve Hızlı Başvuru</h3>
+                    <p>Bu bölümün tüm komutları tek tabloda:</p>
+
+                    <table class="cmd-table">
+                        <thead>
+                            <tr>
+                                <th>Komut</th>
+                                <th>Ne yapar?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>git init</td><td>Klasörü Git deposuna dönüştürür</td></tr>
+                            <tr><td>git status</td><td>Değişikliklerin durumunu gösterir</td></tr>
+                            <tr><td>git add .</td><td>Tüm değişiklikleri sahneye alır</td></tr>
+                            <tr><td>git add -p</td><td>Değişiklikleri parça parça sahneye alır</td></tr>
+                            <tr><td>git commit -m</td><td>Sahnelenen değişiklikleri kaydeder</td></tr>
+                            <tr><td>git commit --amend</td><td>Son commit'i düzenler (push edilmemişse)</td></tr>
+                            <tr><td>git log --oneline</td><td>Kısa commit tarihçesi</td></tr>
+                            <tr><td>git diff --staged</td><td>Commit öncesi ne değişti?</td></tr>
+                            <tr><td>git restore</td><td>Değişikliği veya sahnelemeyi geri al</td></tr>
+                            <tr><td>git rm --cached</td><td>Dosyayı Git'ten çıkar, diskte bırak</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <!-- ══════════════════════════════════════════ -->
+            <!-- BÖLÜM 3 — UZAK DEPOLAR (Stage 4)         -->
+            <!-- ══════════════════════════════════════════ -->
+            <div class="chapter" id="bolum-3">
+
+                <div class="chapter-header">
+                    <p class="chapter-eyebrow">Bölüm 03</p>
+                    <h2 class="chapter-title">Uzak Depolar</h2>
+                    <p class="chapter-subtitle">
+                        GitHub ve benzeri platformlarla çalışmak — clone, push, pull, fetch ve SSH
+                    </p>
+                </div>
+
+                <!-- 3.1 Remote Nedir? -->
+                <div class="section">
+                    <h3 class="section-title">3.1 — Remote Nedir?</h3>
+                    <p>
+                        Şimdiye kadar yaptığımız her şey yalnızca kendi bilgisayarımızda kaldı.
+                        Gerçek dünyada kodunuzu başkalarıyla paylaşmanız, yedeklemeniz ya da
+                        bir sunucudan erişmeniz gerekir. Bunun için <strong>uzak depo (remote)</strong>
+                        kavramı devreye girer.
+                    </p>
+                    <p>
+                        Remote, deponuzun internet üzerindeki bir kopyasıdır. GitHub, GitLab, Bitbucket
+                        gibi platformlar bu kopyayı barındırır. Yerel deponuz ile uzak depo
+                        birbirinden bağımsızdır; siz istediğinizde senkronize edersiniz.
+                    </p>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button><span class="comment"># Mevcut remote bağlantılarını listele</span>
+<span class="cmd">git remote</span> <span class="flag">-v</span>
+
+<span class="comment"># Yeni bir remote ekle</span>
+<span class="cmd">git remote add</span> origin https://github.com/kullanici/repo.git
+
+<span class="comment"># Remote'u yeniden adlandır</span>
+<span class="cmd">git remote rename</span> origin yeni-isim
+
+<span class="comment"># Remote'u kaldır</span>
+<span class="cmd">git remote remove</span> origin</div>
+
+                    <p>
+                        <strong>Origin neden "origin" denir?</strong> Bu bir kural değil, gelenektir.
+                        <code>git clone</code> ile bir depoyu kopyaladığınızda Git, uzak depoyu
+                        otomatik olarak <code>origin</code> olarak adlandırır. Başka bir isim de
+                        verebilirsiniz ama origin o kadar yaygınlaşmıştır ki ekipler bunu
+                        standart kabul eder.
+                    </p>
+                </div>
+
+                <!-- 3.2 HTTPS vs SSH -->
+                <div class="section">
+                    <h3 class="section-title">3.2 — HTTPS ve SSH: Bağlantı Yöntemleri</h3>
+                    <p>
+                        Uzak depoya bağlanmanın iki yolu vardır. Her commit push ettiğinizde
+                        hangisini kullandığınız fark yaratır.
+                    </p>
+
+                    <table class="cmd-table">
+                        <thead>
+                            <tr>
+                                <th>Yöntem</th>
+                                <th>URL Formatı</th>
+                                <th>Kimlik Doğrulama</th>
+                                <th>Öneri</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>HTTPS</td>
+                                <td><code>https://github.com/kullanici/repo.git</code></td>
+                                <td>Kullanıcı adı + token her seferinde</td>
+                                <td>Hızlı başlangıç için</td>
+                            </tr>
+                            <tr>
+                                <td>SSH</td>
+                                <td><code>git@github.com:kullanici/repo.git</code></td>
+                                <td>Bir kez anahtar kurulumu, sonra otomatik</td>
+                                <td>Günlük kullanım için</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p>SSH anahtarı kurmak için:</p>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button><span class="comment"># 1. Yeni bir SSH anahtar çifti oluştur</span>
+<span class="cmd">ssh-keygen</span> <span class="flag">-t ed25519 -C</span> <span class="str">"email@example.com"</span>
+
+<span class="comment"># 2. SSH agent'ı başlat ve anahtarı ekle</span>
+<span class="cmd">eval</span> <span class="str">"$(ssh-agent -s)"</span>
+<span class="cmd">ssh-add</span> ~/.ssh/id_ed25519
+
+<span class="comment"># 3. Açık anahtarı kopyala (GitHub'a eklenecek)</span>
+<span class="cmd">cat</span> ~/.ssh/id_ed25519.pub
+
+<span class="comment"># 4. Bağlantıyı test et</span>
+<span class="cmd">ssh</span> <span class="flag">-T</span> git@github.com</div>
+
+                    <p>
+                        Adım 3'teki çıktıyı kopyalayın, GitHub'da
+                        <em>Settings → SSH and GPG Keys → New SSH Key</em> yolunu izleyerek yapıştırın.
+                        Artık her push/pull'da şifre girmenize gerek kalmaz.
+                    </p>
+
+                    <div class="tip">
+                        <strong>İpucu</strong>
+                        Mevcut bir HTTPS remote'u SSH'a çevirmek isterseniz:
+                        <code>git remote set-url origin git@github.com:kullanici/repo.git</code>
+                    </div>
+                </div>
+
+                <!-- 3.3 git clone -->
+                <div class="section">
+                    <h3 class="section-title">3.3 — Depoyu Kopyalamak: <code>git clone</code></h3>
+                    <p>
+                        Uzak bir deponun tüm tarihçesiyle birlikte yerel kopyasını oluşturur.
+                        Klonlama sonrasında Git otomatik olarak uzak depoyu <code>origin</code>
+                        adıyla ekler ve varsayılan dalı takip etmeye başlar.
+                    </p>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button><span class="comment"># HTTPS ile klonla</span>
+<span class="cmd">git clone</span> https://github.com/kullanici/repo.git
+
+<span class="comment"># SSH ile klonla</span>
+<span class="cmd">git clone</span> git@github.com:kullanici/repo.git
+
+<span class="comment"># Farklı bir klasör adıyla klonla</span>
+<span class="cmd">git clone</span> git@github.com:kullanici/repo.git benim-proje
+
+<span class="comment"># Sadece son commit'i indir (büyük repolarda hız için)</span>
+<span class="cmd">git clone</span> <span class="flag">--depth 1</span> https://github.com/kullanici/repo.git
+
+<span class="comment"># Belirli bir dal ile klonla</span>
+<span class="cmd">git clone</span> <span class="flag">--branch</span> develop https://github.com/kullanici/repo.git</div>
+
+                    <p>
+                        Klonlama sonrasında oluşan yapı:
+                    </p>
+
+                    <div class="code-block">repo/
+├── .git/                  <span class="comment"># Tüm tarihçe burada</span>
+├── .git/config            <span class="comment"># origin remote'u burada tanımlı</span>
+└── ...proje dosyaları...</div>
+                </div>
+
+                <!-- 3.4 fetch vs pull -->
+                <div class="section">
+                    <h3 class="section-title">3.4 — <code>git fetch</code> ve <code>git pull</code> Farkı</h3>
+                    <p>
+                        Bu iki komut sık karıştırılır. Aralarındaki fark kritiktir:
+                    </p>
+
+                    <table class="cmd-table">
+                        <thead>
+                            <tr>
+                                <th>Komut</th>
+                                <th>Ne yapar?</th>
+                                <th>Çalışma dizinine dokunur mu?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>git fetch</td>
+                                <td>Uzaktaki değişiklikleri indirir, uygulama yapmaz</td>
+                                <td>Hayır — güvenli</td>
+                            </tr>
+                            <tr>
+                                <td>git pull</td>
+                                <td>fetch + merge işlemini tek adımda yapar</td>
+                                <td>Evet — dosyalarınız değişir</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button><span class="comment"># Uzaktaki değişiklikleri indir, birleştirme (merge) yapma</span>
+<span class="cmd">git fetch</span> origin
+
+<span class="comment"># Neyin geldiğini gör, sonra karar ver</span>
+<span class="cmd">git log</span> HEAD..origin/main <span class="flag">--oneline</span>
+
+<span class="comment"># Şimdi birleştir</span>
+<span class="cmd">git merge</span> origin/main
+
+<span class="comment"># Ya da fetch + merge yerine doğrudan pull</span>
+<span class="cmd">git pull</span> origin main
+
+<span class="comment"># Merge yerine rebase ile pull (daha temiz tarihçe)</span>
+<span class="cmd">git pull</span> <span class="flag">--rebase</span> origin main</div>
+
+                    <div class="tip">
+                        <strong>İpucu</strong>
+                        Takım ortamında çalışırken <code>git pull</code> yerine önce
+                        <code>git fetch</code> yapıp neyin geldiğini görmek,
+                        sonra merge ya da rebase kararı vermek daha güvenli bir alışkanlıktır.
+                    </div>
+                </div>
+
+                <!-- 3.5 git push -->
+                <div class="section">
+                    <h3 class="section-title">3.5 — Değişiklikleri Göndermek: <code>git push</code></h3>
+                    <p>
+                        Yerel commit'lerinizi uzak depoya gönderir. Push etmek için
+                        uzak depoda push ettiğinizden daha yeni commit'ler olmamalıdır;
+                        varsa önce pull yapmanız gerekir.
+                    </p>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button><span class="comment"># İlk push — upstream bağlantısını kur</span>
+<span class="cmd">git push</span> <span class="flag">-u</span> origin main
+
+<span class="comment"># Sonraki push'lar — upstream kurulduktan sonra kısa yol</span>
+<span class="cmd">git push</span>
+
+<span class="comment"># Belirli dal push</span>
+<span class="cmd">git push</span> origin feature/login
+
+<span class="comment"># Tüm etiketleri gönder</span>
+<span class="cmd">git push</span> <span class="flag">--tags</span>
+
+<span class="comment"># Uzak daldaki commit'lerin üzerine yaz (tehlikeli!)</span>
+<span class="cmd">git push</span> <span class="flag">--force-with-lease</span> origin main</div>
+
+                    <div class="warning">
+                        <strong>Dikkat — Force Push</strong>
+                        <code>--force</code> yerine daima <code>--force-with-lease</code> kullanın.
+                        <code>--force</code> uzak daldaki her şeyin üzerine körce yazar;
+                        <code>--force-with-lease</code> ise uzakta sizin bilmediğiniz commit'ler
+                        varsa reddeder ve veri kaybını önler.
+                    </div>
+                </div>
+
+                <!-- 3.6 Fork ve PR Kültürü -->
+                <div class="section">
+                    <h3 class="section-title">3.6 — Fork ve Pull Request Kültürü</h3>
+                    <p>
+                        Açık kaynak projelere ya da başkasının deposuna katkıda bulunmak
+                        istediğinizde doğrudan push edemezsiniz. Bunun için <strong>fork</strong>
+                        iş akışı kullanılır.
+                    </p>
+
+                    <div class="code-block"><span class="comment"># Fork iş akışı</span>
+
+<span class="comment"># 1. GitHub'da projeyi fork'la (web üzerinde)</span>
+
+<span class="comment"># 2. Fork'unuzu klonla</span>
+<span class="cmd">git clone</span> git@github.com:SENİN_KULLANICI/repo.git
+
+<span class="comment"># 3. Orijinal repoyu upstream olarak ekle</span>
+<span class="cmd">git remote add</span> upstream git@github.com:ORIJINAL/repo.git
+
+<span class="comment"># 4. Upstream'den güncellemeleri al</span>
+<span class="cmd">git fetch</span> upstream
+<span class="cmd">git merge</span> upstream/main
+
+<span class="comment"># 5. Özellik dalında çalış, push et</span>
+<span class="cmd">git push</span> origin feature/benim-katkim
+
+<span class="comment"># 6. GitHub'da Pull Request aç (web üzerinde)</span></div>
+
+                    <p>
+                        <strong>Pull Request (PR)</strong> ya da GitLab'da <strong>Merge Request (MR)</strong>,
+                        yaptığınız değişikliklerin ana depoya alınmasını talep ettiğiniz bir süreçtir.
+                        Ekip arkadaşlarınız kodunuzu inceler (code review), geri bildirim verir
+                        ve onaylandıktan sonra merge edilir.
+                    </p>
+                </div>
+
+                <!-- 3.7 Özet -->
+                <div class="section">
+                    <h3 class="section-title">3.7 — Özet ve Hızlı Başvuru</h3>
+                    <table class="cmd-table">
+                        <thead>
+                            <tr>
+                                <th>Komut</th>
+                                <th>Ne yapar?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>git remote -v</td><td>Bağlı uzak depoları listeler</td></tr>
+                            <tr><td>git remote add</td><td>Yeni uzak depo bağlantısı ekler</td></tr>
+                            <tr><td>git clone &lt;url&gt;</td><td>Uzak depoyu yerel kopyalar</td></tr>
+                            <tr><td>git fetch origin</td><td>Uzaktaki değişiklikleri indirir, uygulamaz</td></tr>
+                            <tr><td>git pull origin main</td><td>İndirir + mevcut dala birleştirir</td></tr>
+                            <tr><td>git pull --rebase</td><td>İndirir + rebase ile uygular (temiz tarihçe)</td></tr>
+                            <tr><td>git push -u origin main</td><td>İlk push + upstream bağlantısı kurar</td></tr>
+                            <tr><td>git push --force-with-lease</td><td>Güvenli zorla gönderme</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <!-- ══════════════════════════════════════════ -->
+            <!-- BÖLÜM 4 — DALLAR VE BİRLEŞTİRME (Stage 5) -->
+            <!-- ══════════════════════════════════════════ -->
+            <div class="chapter" id="bolum-4">
+
+                <div class="chapter-header">
+                    <p class="chapter-eyebrow">Bölüm 04</p>
+                    <h2 class="chapter-title">Dallar ve Birleştirme</h2>
+                    <p class="chapter-subtitle">
+                        Paralel geliştirmenin temeli — branch, merge ve çatışma çözümü
+                    </p>
+                </div>
+
+                <!-- 4.1 Dal Mantığı -->
+                <div class="section">
+                    <h3 class="section-title">4.1 — Dal (Branch) Mantığı</h3>
+                    <p>
+                        Bir dal, aslında bir commit'e işaret eden hafif bir <strong>pointer</strong>'dan
+                        başka bir şey değildir. Dosya kopyalanmaz, klasör oluşmaz — sadece
+                        40 karakterlik bir SHA-1 hash'ine işaret eden küçük bir referans yaratılır.
+                        Bu yüzden Git'te dal oluşturmak neredeyse anlık ve bedavadır.
+                    </p>
+
+                    <div class="code-block">           main
+                            │
+  A ─── B ─── C ─── D      │
+              │            │
+              └── E ─── F  │  feature/login
+                         └──┘</div>
+
+                    <p>
+                        <strong>HEAD</strong> özel bir pointer'dır — şu anda hangi dalda,
+                        hangi commit'te olduğunuzu gösterir. Normalde HEAD bir dalı işaret eder
+                        (örn: <code>main</code>), o dal da bir commit'i işaret eder.
+                    </p>
+                    <p>
+                        Bazen HEAD doğrudan bir commit'i işaret eder, herhangi bir dala bağlı değildir.
+                        Buna <strong>detached HEAD</strong> denir. Genelde eski bir commit'i
+                        incelemek için <code>git checkout &lt;hash&gt;</code> yaptığınızda oluşur.
+                        Bu durumda yaptığınız yeni commit'ler hiçbir dala ait olmaz — dikkatli olun.
+                    </p>
+
+                    <div class="warning">
+                        <strong>Dikkat — Detached HEAD</strong>
+                        Detached HEAD durumundayken commit yaparsanız ve başka bir dala geçerseniz,
+                        o commit'ler kaybolabilir (reflog ile kurtarılabilir ama riskli).
+                        Çalışmaya devam edecekseniz önce <code>git switch -c yeni-dal</code>
+                        ile bir dal oluşturun.
+                    </div>
+                </div>
+
+                <!-- 4.2 Dal İşlemleri -->
+                <div class="section">
+                    <h3 class="section-title">4.2 — Dal İşlemleri</h3>
+                    <p>
+                        Modern Git'te dal işlemleri için <code>git switch</code> ve
+                        <code>git checkout</code> birlikte kullanılabilir; <code>switch</code>
+                        daha yeni ve daha az kafa karıştırıcıdır çünkü sadece dal işlemlerine odaklanır.
+                    </p>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button><span class="comment"># Yeni dal oluştur (geçmeden)</span>
+<span class="cmd">git branch</span> feature/login
+
+<span class="comment"># Var olan dala geç</span>
+<span class="cmd">git switch</span> feature/login
+<span class="comment"># eski yöntem: git checkout feature/login</span>
+
+<span class="comment"># Dal oluştur VE hemen geç (en çok kullanılan)</span>
+<span class="cmd">git switch</span> <span class="flag">-c</span> feature/login
+<span class="comment"># eski yöntem: git checkout -b feature/login</span>
+
+<span class="comment"># Tüm yerel dalları listele</span>
+<span class="cmd">git branch</span>
+
+<span class="comment"># Uzak dalları da göster</span>
+<span class="cmd">git branch</span> <span class="flag">-a</span>
+
+<span class="comment"># Detaylı bilgiyle listele (son commit, takip durumu)</span>
+<span class="cmd">git branch</span> <span class="flag">-vv</span>
+
+<span class="comment"># Dalı sil (güvenli — merge edilmemişse hata verir)</span>
+<span class="cmd">git branch</span> <span class="flag">-d</span> feature/login
+
+<span class="comment"># Dalı zorla sil (merge edilmemiş olsa bile)</span>
+<span class="cmd">git branch</span> <span class="flag">-D</span> feature/login
+
+<span class="comment"># Dalı yeniden adlandır</span>
+<span class="cmd">git branch</span> <span class="flag">-m</span> eski-isim yeni-isim</div>
+
+                    <div class="tip">
+                        <strong>İpucu</strong>
+                        Dal isimlendirmede yaygın kural: <code>feature/özellik-adı</code>,
+                        <code>fix/hata-adı</code>, <code>hotfix/acil-düzeltme</code>.
+                        Bu, hangi dalın ne amaçla açıldığını herkes için netleştirir.
+                    </div>
+                </div>
+
+                <!-- 4.3 git merge -->
+                <div class="section">
+                    <h3 class="section-title">4.3 — Birleştirme: <code>git merge</code></h3>
+                    <p>
+                        Merge, bir dalın değişikliklerini başka bir dala entegre eder.
+                        İki farklı senaryo vardır ve sonuçları çok farklıdır.
+                    </p>
+
+                    <table class="cmd-table">
+                        <thead>
+                            <tr>
+                                <th>Senaryo</th>
+                                <th>Ne olur?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Fast-forward merge</strong></td>
+                                <td>Ana dal hiç ilerlememişse, pointer sadece ileri kaydırılır. Yeni merge commit oluşmaz.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>3-way merge</strong></td>
+                                <td>Her iki dal da ayrı commit'ler almışsa, Git ortak ataya bakarak bir <em>merge commit</em> oluşturur.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button><span class="comment"># main dalına geç, sonra feature dalını içine al</span>
+<span class="cmd">git switch</span> main
+<span class="cmd">git merge</span> feature/login
+
+<span class="comment"># Fast-forward mümkün olsa bile merge commit oluştur</span>
+<span class="cmd">git merge</span> <span class="flag">--no-ff</span> feature/login
+
+<span class="comment"># Tüm dalın commit'lerini TEK bir commit'e sıkıştırarak birleştir</span>
+<span class="cmd">git merge</span> <span class="flag">--squash</span> feature/login
+<span class="cmd">git commit</span> <span class="flag">-m</span> <span class="str">"feat: giriş sistemi eklendi"</span></div>
+
+                    <p>
+                        <code>--no-ff</code> tercih eden ekipler çoğunlukla şunu ister:
+                        her özelliğin ayrı bir dal olarak tarihçede görünmesi, hatta
+                        fast-forward mümkün olsa bile. Bu, "bu commit'ler bir özellik dalıydı"
+                        bilgisini korur.
+                    </p>
+                    <p>
+                        <code>--squash</code> ise özellikle çok sayıda küçük "wip", "typo fix"
+                        commit'i içeren dalları ana dala tek, temiz bir commit olarak
+                        eklemek istediğinizde kullanışlıdır.
+                    </p>
+                </div>
+
+                <!-- 4.4 Çatışma Çözümü -->
+                <div class="section">
+                    <h3 class="section-title">4.4 — Çatışma Çözümü (Conflict Resolution)</h3>
+                    <p>
+                        İki dal aynı dosyanın aynı satırını farklı şekillerde değiştirmişse,
+                        Git hangisinin doğru olduğuna karar veremez ve size bırakır.
+                        Buna <strong>merge conflict</strong> denir.
+                    </p>
+
+                    <p>Git, çatışan dosyanın içine özel işaretler ekler:</p>
+
+                    <div class="code-block">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+const apiUrl = "https://api.example.com/v1";
+=======
+const apiUrl = "https://api.example.com/v2";
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/api-update</div>
+
+                    <p>
+                        <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> ile <code>=======</code> arası
+                        sizin dalınızdaki (şu an bulunduğunuz dal) versiyon;
+                        <code>=======</code> ile <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> arası
+                        birleştirmeye çalıştığınız dalın versiyonudur.
+                    </p>
+
+                    <p><strong>Çözüm adımları:</strong></p>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button><span class="comment"># 1. Çatışan dosyaları bul</span>
+<span class="cmd">git status</span>
+
+<span class="comment"># 2. Dosyayı editörde aç, işaretleri kaldır,</span>
+<span class="comment">#    doğru içeriğe manuel olarak karar ver</span>
+
+<span class="comment"># 3. Çözülen dosyayı sahnele</span>
+<span class="cmd">git add</span> dosya-adi.js
+
+<span class="comment"># 4. Tüm çatışmalar çözüldükten sonra commit et</span>
+<span class="cmd">git commit</span>
+
+<span class="comment"># Vazgeçmek isterseniz merge'i tamamen iptal edin</span>
+<span class="cmd">git merge</span> <span class="flag">--abort</span></div>
+
+                    <p>
+                        VS Code, IntelliJ gibi modern editörler çatışmaları görsel olarak
+                        gösterir ve "Accept Current", "Accept Incoming", "Accept Both" gibi
+                        tek tıkla çözüm butonları sunar. Büyük çatışmalarda
+                        <code>git mergetool</code> komutu ile harici bir birleştirme
+                        aracı da açabilirsiniz.
+                    </p>
+
+                    <div class="note">
+                        <strong>Not</strong>
+                        Çatışmadan korkmayın — bu Git'in kötü çalıştığı anlamına gelmez,
+                        tam tersine güvenlik önlemidir. Git, sizin onayınız olmadan
+                        hiçbir kod satırını sessizce üzerine yazmaz.
+                    </div>
+                </div>
+
+                <!-- 4.5 Özet -->
+                <div class="section">
+                    <h3 class="section-title">4.5 — Özet ve Hızlı Başvuru</h3>
+                    <table class="cmd-table">
+                        <thead>
+                            <tr>
+                                <th>Komut</th>
+                                <th>Ne yapar?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>git branch</td><td>Dalları listeler</td></tr>
+                            <tr><td>git switch -c ad</td><td>Yeni dal oluşturur ve geçer</td></tr>
+                            <tr><td>git branch -d ad</td><td>Dalı güvenli şekilde siler</td></tr>
+                            <tr><td>git merge dal-adı</td><td>Belirtilen dalı mevcut dala birleştirir</td></tr>
+                            <tr><td>git merge --no-ff</td><td>Her zaman merge commit oluşturur</td></tr>
+                            <tr><td>git merge --squash</td><td>Dalı tek commit olarak sıkıştırır</td></tr>
+                            <tr><td>git merge --abort</td><td>Çatışmalı merge'i iptal eder</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <!-- ══════════════════════════════════════════ -->
+            <!-- BÖLÜM 5 — İLERİ TEKNİKLER (Stage 6)     -->
+            <!-- ══════════════════════════════════════════ -->
+            <div class="chapter" id="bolum-5">
+
+                <div class="chapter-header">
+                    <p class="chapter-eyebrow">Bölüm 05</p>
+                    <h2 class="chapter-title">İleri Git Teknikleri</h2>
+                    <p class="chapter-subtitle">
+                        Tarihi yeniden yazan araçlar — rebase, stash, cherry-pick, reset, reflog
+                    </p>
+                </div>
+
+                <!-- 5.1 git rebase -->
+                <div class="section">
+                    <h3 class="section-title">5.1 — Geçmişi Yeniden Düzenlemek: <code>git rebase</code></h3>
+                    <p>
+                        Rebase, bir dalın commit'lerini alıp başka bir noktanın üzerine yeniden uygular.
+                        Sonuç olarak tarihçe <strong>doğrusal</strong> görünür — sanki dal hiç ayrılmamış
+                        gibi. Merge ise iki dalın birleştiğini gösteren bir merge commit bırakır.
+                    </p>
+
+                    <div class="code-block"><span class="comment"># Merge sonrası tarihçe (dallanma görünür)</span>
+A ─── B ─── C ─── M     ← M bir merge commit
+          ╲       ╱
+           D ─── E
+
+<span class="comment"># Rebase sonrası tarihçe (doğrusal, temiz)</span>
+A ─── B ─── C ─── D' ─── E'   ← D ve E yeniden yazıldı</div>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button><span class="comment"># feature dalındayken main'i baz al</span>
+<span class="cmd">git switch</span> feature/login
+<span class="cmd">git rebase</span> main
+
+<span class="comment"># Rebase sırasında çatışma çıkarsa</span>
+<span class="comment"># çatışmayı çöz, sonra:</span>
+<span class="cmd">git add</span> .
+<span class="cmd">git rebase</span> <span class="flag">--continue</span>
+
+<span class="comment"># Rebase'i tamamen iptal et</span>
+<span class="cmd">git rebase</span> <span class="flag">--abort</span></div>
+
+                    <p>
+                        <strong>Interactive Rebase</strong> en güçlü Git araçlarından biridir.
+                        Son N commit'i tekrar açar ve her birini düzenlemenize, birleştirmenize
+                        ya da silmenize izin verir.
+                    </p>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button><span class="comment"># Son 4 commit'i interaktif düzenle</span>
+<span class="cmd">git rebase</span> <span class="flag">-i</span> HEAD~4</div>
+
+                    <p>Açılan editörde her commit için kullanabileceğiniz komutlar:</p>
+
+                    <table class="cmd-table">
+                        <thead>
+                            <tr>
+                                <th>Komut</th>
+                                <th>Ne yapar?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>pick</td><td>Commit'i olduğu gibi bırak</td></tr>
+                            <tr><td>reword</td><td>Commit mesajını değiştir</td></tr>
+                            <tr><td>edit</td><td>Commit içeriğini değiştir</td></tr>
+                            <tr><td>squash</td><td>Bir önceki commit ile birleştir, mesajları birleştir</td></tr>
+                            <tr><td>fixup</td><td>Bir önceki commit ile birleştir, bu commit'in mesajını at</td></tr>
+                            <tr><td>drop</td><td>Bu commit'i tarihçeden tamamen sil</td></tr>
+                        </tbody>
+                    </table>
+
+                    <div class="warning">
+                        <strong>Altın Kural</strong>
+                        Rebase, commit'leri yeniden yazar. Push edilmiş ve başkaları tarafından
+                        kullanılan commit'leri asla rebase etmeyin — ekip arkadaşlarınızın
+                        tarihçesi bozulur ve ciddi sorunlara yol açar. Rebase yalnızca
+                        henüz push etmediğiniz yerel commit'ler için güvenlidir.
+                    </div>
+                </div>
+
+                <!-- 5.2 git stash -->
+                <div class="section">
+                    <h3 class="section-title">5.2 — Değişiklikleri Geçici Saklamak: <code>git stash</code></h3>
+                    <p>
+                        Bir özellik üzerinde çalışırken beklenmedik bir hata bildirimi geldi
+                        ve başka bir dala geçmeniz gerekiyor — ama yarım kalan işinizi
+                        commit etmek istemiyorsunuz. <code>git stash</code> tam bu an içindir:
+                        değişikliklerinizi geçici olarak bir kenara kaldırır, çalışma
+                        dizinini temizler.
+                    </p>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button><span class="comment"># Tüm değişiklikleri sakla</span>
+<span class="cmd">git stash</span>
+
+<span class="comment"># Açıklama ekleyerek sakla (önerilir)</span>
+<span class="cmd">git stash push</span> <span class="flag">-m</span> <span class="str">"login formunu yarıda bıraktım"</span>
+
+<span class="comment"># Takip edilmeyen (untracked) dosyaları da sakla</span>
+<span class="cmd">git stash push</span> <span class="flag">-u</span>
+
+<span class="comment"># Saklananları listele</span>
+<span class="cmd">git stash list</span>
+
+<span class="comment"># Belirli bir stash'ın içeriğini göster</span>
+<span class="cmd">git stash show</span> <span class="flag">-p</span> stash@{0}
+
+<span class="comment"># Son stash'ı geri getir ve listeden kaldır</span>
+<span class="cmd">git stash pop</span>
+
+<span class="comment"># Geri getir ama listede bırak</span>
+<span class="cmd">git stash apply</span> stash@{1}
+
+<span class="comment"># Belirli stash'ı sil</span>
+<span class="cmd">git stash drop</span> stash@{0}
+
+<span class="comment"># Tüm stash'ları temizle</span>
+<span class="cmd">git stash clear</span></div>
+
+                    <div class="tip">
+                        <strong>İpucu</strong>
+                        <code>git stash pop</code> yerine <code>git stash apply</code> kullanmak
+                        daha güvenlidir — değişiklikler geri gelirken çatışma çıkması halinde
+                        stash listede kalmaya devam eder ve kaybetmezsiniz.
+                    </div>
+                </div>
+
+                <!-- 5.3 cherry-pick -->
+                <div class="section">
+                    <h3 class="section-title">5.3 — Seçici Commit Taşıma: <code>git cherry-pick</code></h3>
+                    <p>
+                        Başka bir dalda bulunan belirli bir commit'i — ve yalnızca onu —
+                        mevcut dalınıza uygulamak istiyorsunuz. Tüm dalı merge etmek istemiyorsunuz.
+                        İşte <code>cherry-pick</code> tam bunu yapar.
+                    </p>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button><span class="comment"># Tek commit'i taşı</span>
+<span class="cmd">git cherry-pick</span> a3f9c2d
+
+<span class="comment"># Birden fazla commit</span>
+<span class="cmd">git cherry-pick</span> a3f9c2d b7e1f3a
+
+<span class="comment"># Commit aralığı (a dahil değil, b dahil)</span>
+<span class="cmd">git cherry-pick</span> a3f9c2d..b7e1f3a
+
+<span class="comment"># Commit et ama sahnelenmiş bırak (commit etme)</span>
+<span class="cmd">git cherry-pick</span> <span class="flag">-n</span> a3f9c2d
+
+<span class="comment"># Çatışma çıkarsa, çöz ve devam et</span>
+<span class="cmd">git cherry-pick</span> <span class="flag">--continue</span>
+
+<span class="comment"># İptal et</span>
+<span class="cmd">git cherry-pick</span> <span class="flag">--abort</span></div>
+
+                    <p>
+                        Ne zaman kullanılır? Örneğin: <code>develop</code> dalında keşfettiğiniz
+                        kritik bir güvenlik düzeltmesini <code>main</code> dalına da uygulamanız
+                        gerekiyor ama develop'taki diğer yarım kalan özellikler henüz hazır değil.
+                        Sadece o commit'i cherry-pick edersiniz.
+                    </p>
+                </div>
+
+                <!-- 5.4 reset ve revert -->
+                <div class="section">
+                    <h3 class="section-title">5.4 — Geri Alma: <code>git reset</code> ve <code>git revert</code></h3>
+                    <p>
+                        Bir hatayı geri almak için iki farklı araç vardır. Hangisini seçeceğiniz
+                        o commit'in push edilip edilmediğine bağlıdır.
+                    </p>
+
+                    <table class="cmd-table">
+                        <thead>
+                            <tr>
+                                <th>Araç</th>
+                                <th>Ne yapar?</th>
+                                <th>Tarihçeyi değiştirir mi?</th>
+                                <th>Ne zaman kullan?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>git reset</td>
+                                <td>HEAD'i geri taşır</td>
+                                <td>Evet</td>
+                                <td>Henüz push edilmemiş commit'ler</td>
+                            </tr>
+                            <tr>
+                                <td>git revert</td>
+                                <td>Geri alma commit'i oluşturur</td>
+                                <td>Hayır (ekler)</td>
+                                <td>Push edilmiş, paylaşılan commit'ler</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button><span class="comment"># ── git reset ──────────────────────────────</span>
+
+<span class="comment"># Son commit'i geri al, dosyalar staged kalır</span>
+<span class="cmd">git reset</span> <span class="flag">--soft</span> HEAD~1
+
+<span class="comment"># Son commit'i geri al, dosyalar unstaged olur (varsayılan)</span>
+<span class="cmd">git reset</span> <span class="flag">--mixed</span> HEAD~1
+
+<span class="comment"># Son commit'i geri al VE dosya değişikliklerini de sil</span>
+<span class="cmd">git reset</span> <span class="flag">--hard</span> HEAD~1
+
+<span class="comment"># Belirli bir commit'e geri dön</span>
+<span class="cmd">git reset</span> <span class="flag">--hard</span> a3f9c2d
+
+
+<span class="comment"># ── git revert ─────────────────────────────</span>
+
+<span class="comment"># Belirli commit'i geri alan yeni bir commit oluştur</span>
+<span class="cmd">git revert</span> a3f9c2d
+
+<span class="comment"># Birden fazla commit'i revert et</span>
+<span class="cmd">git revert</span> HEAD~3..HEAD
+
+<span class="comment"># Commit etmeden sahneye al (birden fazla revert'i tek commit'e topla)</span>
+<span class="cmd">git revert</span> <span class="flag">-n</span> a3f9c2d</div>
+
+                    <div class="warning">
+                        <strong>Dikkat — git reset --hard</strong>
+                        <code>--hard</code> ile yapılan reset, working directory'deki
+                        kaydedilmemiş değişiklikleri geri dönüşsüz siler.
+                        Commit edilmemiş çalışmanızı kaybedersiniz.
+                        Her zaman önce <code>git status</code> ile durumu kontrol edin.
+                    </div>
+                </div>
+
+                <!-- 5.5 git reflog -->
+                <div class="section">
+                    <h3 class="section-title">5.5 — Kurtarma Ağı: <code>git reflog</code></h3>
+                    <p>
+                        Git'in en güçlü güvenlik özelliklerinden biri — çoğu kullanıcının
+                        farkında olmadığı <strong>reflog</strong>. Git, HEAD'in her hareket ettiği
+                        anı kaydeder: her commit, her checkout, her merge, her rebase…
+                        Hepsini 90 gün boyunca saklar.
+                    </p>
+                    <p>
+                        <code>git reset --hard</code> ile commit'lerinizi "sildiyseniz" ya da
+                        yanlış bir rebase yaptıysanız, reflog sayesinde geri dönebilirsiniz.
+                    </p>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button><span class="comment"># Tüm HEAD hareketlerini gör</span>
+<span class="cmd">git reflog</span>
+
+<span class="comment"># Örnek çıktı:</span>
+<span class="comment"># a3f9c2d HEAD@{0}: reset: moving to HEAD~1</span>
+<span class="comment"># b7e1f3a HEAD@{1}: commit: feat: login eklendi    ← kayıp commit!</span>
+<span class="comment"># c2d4a1b HEAD@{2}: commit: fix: hata düzeltildi</span>
+
+<span class="comment"># Kayıp commit'e geri dön</span>
+<span class="cmd">git reset</span> <span class="flag">--hard</span> HEAD@{1}
+
+<span class="comment"># Ya da o commit'ten yeni bir dal başlat</span>
+<span class="cmd">git switch</span> <span class="flag">-c</span> kurtarilan-dal HEAD@{1}</div>
+
+                    <div class="tip">
+                        <strong>İpucu</strong>
+                        Git'te bir şeyi "gerçekten" silmek düşündüğünüzden çok daha zordur.
+                        Commit ettiyseniz, reflog sizi kurtarır.
+                        Paniklemeden önce her zaman <code>git reflog</code> çalıştırın.
+                    </div>
+                </div>
+
+                <!-- 5.6 git bisect -->
+                <div class="section">
+                    <h3 class="section-title">5.6 — Hatayı Bulmak: <code>git bisect</code></h3>
+                    <p>
+                        "Dün çalışıyordu, bugün çalışmıyor" — hangi commit hatayı üretti?
+                        Yüzlerce commit arasında manuel arama yapmak yerine <code>git bisect</code>,
+                        ikili arama (binary search) algoritması ile hatayı üreten commit'i
+                        logaritmik sürede bulur.
+                    </p>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button><span class="comment"># Bisect başlat</span>
+<span class="cmd">git bisect start</span>
+
+<span class="comment"># Şu anki commit bozuk</span>
+<span class="cmd">git bisect bad</span>
+
+<span class="comment"># Bildiğiniz çalışan commit'i işaretle</span>
+<span class="cmd">git bisect good</span> v1.2.0
+
+<span class="comment"># Git sizi ortadaki commit'e götürür</span>
+<span class="comment"># Test edin, sonucu bildirin:</span>
+<span class="cmd">git bisect good</span>   <span class="comment"># bu commit çalışıyor</span>
+<span class="cmd">git bisect bad</span>    <span class="comment"># bu commit bozuk</span>
+
+<span class="comment"># Git sonunda hatayı üreten commit'i gösterir</span>
+<span class="comment"># Bitirince orijinal dala dön</span>
+<span class="cmd">git bisect reset</span></div>
+
+                    <p>
+                        100 commit arasında aramayı düşünün: manuel 100 test yerine
+                        bisect sadece 7 adımda bulur (log₂100 ≈ 7).
+                        Bir test script'i varsa süreci tamamen otomatize de edebilirsiniz:
+                        <code>git bisect run ./test.sh</code>
+                    </p>
+                </div>
+
+                <!-- 5.7 Özet -->
+                <div class="section">
+                    <h3 class="section-title">5.7 — Özet ve Hızlı Başvuru</h3>
+                    <table class="cmd-table">
+                        <thead>
+                            <tr>
+                                <th>Komut</th>
+                                <th>Ne yapar?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>git rebase main</td><td>Dalı main'in üstüne yeniden taşır</td></tr>
+                            <tr><td>git rebase -i HEAD~N</td><td>Son N commit'i interaktif düzenle</td></tr>
+                            <tr><td>git stash push -m</td><td>Değişiklikleri isimli olarak sakla</td></tr>
+                            <tr><td>git stash pop</td><td>Son saklananı geri getir ve sil</td></tr>
+                            <tr><td>git cherry-pick &lt;hash&gt;</td><td>Belirli commit'i bu dala uygula</td></tr>
+                            <tr><td>git reset --soft HEAD~1</td><td>Son commit'i geri al, staged bırak</td></tr>
+                            <tr><td>git reset --hard HEAD~1</td><td>Son commit + dosya değişikliklerini sil</td></tr>
+                            <tr><td>git revert &lt;hash&gt;</td><td>Güvenli geri alma commit'i oluştur</td></tr>
+                            <tr><td>git reflog</td><td>Tüm HEAD hareketlerini listele</td></tr>
+                            <tr><td>git bisect</td><td>İkili aramayla hatayı üreten commit'i bul</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <!-- ══════════════════════════════════════════ -->
+            <!-- BÖLÜM 6 — PROFESYONEL İŞ AKIŞLARI (Stage 7) -->
+            <!-- ══════════════════════════════════════════ -->
+            <div class="chapter" id="bolum-6">
+
+                <div class="chapter-header">
+                    <p class="chapter-eyebrow">Bölüm 06</p>
+                    <h2 class="chapter-title">Profesyonel İş Akışları</h2>
+                    <p class="chapter-subtitle">
+                        Ekip ortamında Git — Git Flow, hooks, submodules, etiketleme ve güvenlik
+                    </p>
+                </div>
+
+                <!-- 6.1 Branch Stratejileri -->
+                <div class="section">
+                    <h3 class="section-title">6.1 — Dal Stratejileri</h3>
+                    <p>
+                        Tek kişilik projede her şeyi <code>main</code>'e commit etmek işe yarayabilir.
+                        Ama bir ekipte onlarca geliştirici aynı kod tabanında çalışırken,
+                        kimin ne zaman nereye push ettiğini yönetmek bir strateji gerektirir.
+                        Yaygın üç yaklaşım şunlardır:
+                    </p>
+
+                    <table class="cmd-table">
+                        <thead>
+                            <tr>
+                                <th>Strateji</th>
+                                <th>Dallar</th>
+                                <th>En iyi olduğu yer</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Git Flow</strong></td>
+                                <td>main, develop, feature/*, release/*, hotfix/*</td>
+                                <td>Planlı sürüm döngüsü olan ürünler</td>
+                            </tr>
+                            <tr>
+                                <td><strong>GitHub Flow</strong></td>
+                                <td>main + kısa ömürlü feature dalları</td>
+                                <td>Sürekli dağıtım (CI/CD) yapan ekipler</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Trunk-based</strong></td>
+                                <td>Tek main dalı, çok kısa ömürlü dallar</td>
+                                <td>Küçük, hızlı hareket eden ekipler</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p><strong>Git Flow</strong> nasıl çalışır:</p>
+
+                    <div class="code-block"><span class="comment"># main    → her zaman production-ready, etiketli sürümler</span>
+<span class="comment"># develop → bir sonraki sürüm için entegrasyon dalı</span>
+<span class="comment"># feature → her özellik kendi dalında gelişir</span>
+<span class="comment"># release → sürüm öncesi son düzeltmeler</span>
+<span class="comment"># hotfix  → canlıdaki acil düzeltmeler</span>
+
+<span class="comment"># Yeni özellik başlat</span>
+<span class="cmd">git switch</span> <span class="flag">-c</span> feature/odeme-sistemi develop
+
+<span class="comment"># Özellik bitti, develop'a merge et</span>
+<span class="cmd">git switch</span> develop
+<span class="cmd">git merge</span> <span class="flag">--no-ff</span> feature/odeme-sistemi
+<span class="cmd">git branch</span> <span class="flag">-d</span> feature/odeme-sistemi
+
+<span class="comment"># Sürüm dalı aç</span>
+<span class="cmd">git switch</span> <span class="flag">-c</span> release/1.2.0 develop
+
+<span class="comment"># Sürümü main ve develop'a merge et</span>
+<span class="cmd">git switch</span> main
+<span class="cmd">git merge</span> <span class="flag">--no-ff</span> release/1.2.0
+<span class="cmd">git tag</span> <span class="flag">-a</span> v1.2.0 <span class="flag">-m</span> <span class="str">"Sürüm 1.2.0"</span></div>
+
+                    <div class="tip">
+                        <strong>İpucu</strong>
+                        Hangi stratejiyi seçeceğiniz takımın büyüklüğüne, dağıtım sıklığına
+                        ve ürünün olgunluk seviyesine bağlıdır. Çoğu modern ekip
+                        GitHub Flow'u tercih eder — basit ve CI/CD ile mükemmel uyum sağlar.
+                    </div>
+                </div>
+
+                <!-- 6.2 git tag -->
+                <div class="section">
+                    <h3 class="section-title">6.2 — Sürüm Etiketleme: <code>git tag</code></h3>
+                    <p>
+                        Tag'ler belirli commit'lere kalıcı isimler verir. Genellikle yazılım
+                        sürümlerini işaretlemek için kullanılır. İki türü vardır:
+                    </p>
+
+                    <table class="cmd-table">
+                        <thead>
+                            <tr>
+                                <th>Tür</th>
+                                <th>Nedir?</th>
+                                <th>Ne zaman kullan?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Lightweight tag</td>
+                                <td>Sadece bir commit hash işaretçisi</td>
+                                <td>Kişisel, geçici işaretler</td>
+                            </tr>
+                            <tr>
+                                <td>Annotated tag</td>
+                                <td>Mesaj, tarih, imzalayan bilgisi içerir</td>
+                                <td>Resmi sürümler — bu tercih edilmeli</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button><span class="comment"># Annotated tag oluştur (önerilir)</span>
+<span class="cmd">git tag</span> <span class="flag">-a</span> v1.0.0 <span class="flag">-m</span> <span class="str">"İlk kararlı sürüm"</span>
+
+<span class="comment"># Lightweight tag</span>
+<span class="cmd">git tag</span> v1.0.0-beta
+
+<span class="comment"># Geçmişteki bir commit'i etiketle</span>
+<span class="cmd">git tag</span> <span class="flag">-a</span> v0.9.0 a3f9c2d <span class="flag">-m</span> <span class="str">"Beta sürümü"</span>
+
+<span class="comment"># Tüm tag'leri listele</span>
+<span class="cmd">git tag</span>
+
+<span class="comment"># Pattern ile filtrele</span>
+<span class="cmd">git tag</span> <span class="flag">-l</span> <span class="str">"v1.*"</span>
+
+<span class="comment"># Tag'i uzak depoya gönder (push tag'leri otomatik göndermez!)</span>
+<span class="cmd">git push</span> origin v1.0.0
+
+<span class="comment"># Tüm tag'leri push et</span>
+<span class="cmd">git push</span> origin <span class="flag">--tags</span>
+
+<span class="comment"># Tag sil (yerel)</span>
+<span class="cmd">git tag</span> <span class="flag">-d</span> v1.0.0-beta
+
+<span class="comment"># Tag sil (uzak)</span>
+<span class="cmd">git push</span> origin <span class="flag">--delete</span> v1.0.0-beta</div>
+
+                    <p>
+                        Sürüm numaralandırmasında evrensel standart <strong>Semantic Versioning</strong>'dir:
+                        <code>MAJOR.MINOR.PATCH</code> — örneğin <code>v2.1.4</code>.
+                        MAJOR kırıcı değişiklik, MINOR yeni özellik, PATCH hata düzeltmesi anlamına gelir.
+                    </p>
+                </div>
+
+                <!-- 6.3 Git Hooks -->
+                <div class="section">
+                    <h3 class="section-title">6.3 — Otomasyonlar: Git Hooks</h3>
+                    <p>
+                        Git hooks, belirli Git olaylarından önce veya sonra otomatik çalışan
+                        script'lerdir. <code>.git/hooks/</code> klasöründe saklanır.
+                        Kod kalitesini zorlamak, test çalıştırmak, commit mesajı formatını
+                        kontrol etmek için idealdir.
+                    </p>
+
+                    <table class="cmd-table">
+                        <thead>
+                            <tr>
+                                <th>Hook</th>
+                                <th>Ne zaman çalışır?</th>
+                                <th>Tipik kullanım</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>pre-commit</td>
+                                <td>git commit çalışmadan önce</td>
+                                <td>Lint, format, birim testleri</td>
+                            </tr>
+                            <tr>
+                                <td>commit-msg</td>
+                                <td>Commit mesajı yazıldıktan sonra</td>
+                                <td>Conventional Commits formatını zorla</td>
+                            </tr>
+                            <tr>
+                                <td>pre-push</td>
+                                <td>git push çalışmadan önce</td>
+                                <td>Entegrasyon testleri, build kontrolü</td>
+                            </tr>
+                            <tr>
+                                <td>post-commit</td>
+                                <td>Commit tamamlandıktan sonra</td>
+                                <td>Bildirim gönderme, log tutma</td>
+                            </tr>
+                            <tr>
+                                <td>post-merge</td>
+                                <td>Merge tamamlandıktan sonra</td>
+                                <td>Bağımlılıkları güncelle (npm install)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p>Örnek bir <code>pre-commit</code> hook:</p>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button><span class="comment">#!/bin/sh</span>
+<span class="comment"># .git/hooks/pre-commit — çalıştırılabilir olmalı (chmod +x)</span>
+
+<span class="comment"># ESLint ile kod kalitesini kontrol et</span>
+<span class="cmd">npx eslint</span> src/
+
+<span class="comment"># ESLint hata verdiyse commit'i engelle</span>
+if [ $? <span class="flag">-ne</span> 0 ]; then
+  echo <span class="str">"Lint hataları var. Commit iptal edildi."</span>
+  exit 1
+fi</div>
+
+                    <p>
+                        Hooks <code>.git/</code> içinde olduğu için versiyon kontrolünde
+                        görünmez ve ekiple paylaşılamaz. Bunu çözmek için
+                        <strong>Husky</strong> kullanılır:
+                    </p>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button"><span class="comment"># Husky kurulumu</span>
+<span class="cmd">npm install</span> <span class="flag">--save-dev</span> husky
+<span class="cmd">npx husky</span> init
+
+<span class="comment"># pre-commit hook oluştur</span>
+<span class="cmd">echo</span> <span class="str">"npm test"</span> > .husky/pre-commit
+
+<span class="comment"># Artık .husky/ klasörü git'e eklenebilir</span>
+<span class="comment"># ve tüm ekip aynı hook'ları kullanır</span>
+<span class="cmd">git add</span> .husky/</div>
+                </div>
+
+                <!-- 6.4 Submodules -->
+                <div class="section">
+                    <h3 class="section-title">6.4 — Bağımlı Depolar: <code>git submodule</code></h3>
+                    <p>
+                        Projeniz başka bir Git deposunu içinde barındırması gerektiğinde
+                        (paylaşılan bir kütüphane, tema, ya da ortak araçlar gibi)
+                        submodule kullanılır. Ana deponuz, submodule'ün hangi commit'te
+                        olduğunu takip eder — dosya içeriğini değil.
+                    </p>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button><span class="comment"># Submodule ekle</span>
+<span class="cmd">git submodule add</span> https://github.com/ornek/kutüphane.git lib/kutuphane
+
+<span class="comment"># Submodule içeren bir repoyu klonla</span>
+<span class="cmd">git clone</span> <span class="flag">--recurse-submodules</span> https://github.com/ornek/repo.git
+
+<span class="comment"># Klonladıktan sonra submodule'leri başlat</span>
+<span class="cmd">git submodule update</span> <span class="flag">--init --recursive</span>
+
+<span class="comment"># Tüm submodule'leri güncelle</span>
+<span class="cmd">git submodule update</span> <span class="flag">--remote</span>
+
+<span class="comment"># Submodule durumunu gör</span>
+<span class="cmd">git submodule status</span></div>
+
+                    <div class="warning">
+                        <strong>Dikkat — Submodule Tuzakları</strong>
+                        Submodule'ler karmaşık olabilir: klonlarken <code>--recurse-submodules</code>
+                        unutulursa klasörler boş gelir; güncelleme yapıldığında ana repoda
+                        commit atmayı unutmak yaygın bir hatadır. Alternatif olarak
+                        <code>git subtree</code> daha basit ama daha az esnek bir seçenektir.
+                    </div>
+                </div>
+
+                <!-- 6.5 .gitignore -->
+                <div class="section">
+                    <h3 class="section-title">6.5 — Görmezden Gelmek: <code>.gitignore</code></h3>
+                    <p>
+                        Her projede Git'in takip etmemesi gereken dosyalar vardır:
+                        bağımlılık klasörleri, derleme çıktıları, IDE yapılandırmaları,
+                        hassas bilgiler içeren <code>.env</code> dosyaları…
+                        <code>.gitignore</code> bu dosyaların listesini tutar.
+                    </p>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button"><span class="comment"># Örnek .gitignore dosyası</span>
+
+<span class="comment"># Bağımlılıklar</span>
+node_modules/
+vendor/
+
+<span class="comment"># Derleme çıktıları</span>
+dist/
+build/
+*.o
+*.pyc
+
+<span class="comment"># Ortam değişkenleri (asla commit'leme!)</span>
+.env
+.env.local
+*.env
+
+<span class="comment"># IDE dosyaları</span>
+.vscode/
+.idea/
+*.swp
+
+<span class="comment"># İşletim sistemi dosyaları</span>
+.DS_Store
+Thumbs.db
+
+<span class="comment"># Log dosyaları</span>
+*.log
+logs/</div>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button><span class="comment"># Zaten takip edilen bir dosyayı gitignore'a alma</span>
+<span class="cmd">git rm</span> <span class="flag">--cached</span> .env
+<span class="comment"># Sonra .gitignore'a .env ekle ve commit et</span>
+
+<span class="comment"># Tüm kullanıcılar için global gitignore</span>
+<span class="cmd">git config</span> <span class="flag">--global</span> core.excludesfile ~/.gitignore_global
+
+<span class="comment"># Bir dosyanın neden ignore edildiğini öğren</span>
+<span class="cmd">git check-ignore</span> <span class="flag">-v</span> dosya.txt</div>
+
+                    <div class="note">
+                        <strong>Not</strong>
+                        gitignore.io adresinde proje türünüze göre (Node, Python, Java, VS Code…)
+                        hazır <code>.gitignore</code> şablonları bulunur.
+                    </div>
+                </div>
+
+                <!-- 6.6 Güvenlik -->
+                <div class="section">
+                    <h3 class="section-title">6.6 — Güvenlik ve İyi Pratikler</h3>
+                    <p>
+                        Git kullanırken en yaygın güvenlik hataları ve nasıl önleneceği:
+                    </p>
+
+                    <p>
+                        <strong>Şifre ve token commit'lemek</strong> — En sık yapılan ve
+                        en tehlikeli hatadır. GitHub bile repoları tarıyarak sızan secret'ları
+                        tespit eder ve sizi uyarır. Bir kez commit edilip push edilen secret
+                        "silseniz" bile tarihçede kalır.
+                    </p>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button"><span class="comment"># Tarihçeden dosyayı temizle (BFG Repo Cleaner ile)</span>
+<span class="cmd">java -jar</span> bfg.jar <span class="flag">--delete-files</span> gizli.env repo.git
+<span class="cmd">git reflog expire</span> <span class="flag">--expire=now --all</span>
+<span class="cmd">git gc</span> <span class="flag">--prune=now --aggressive</span>
+<span class="cmd">git push</span> <span class="flag">--force</span>
+
+<span class="comment"># Ayrıca o secret'ı hemen geçersiz kılın!</span>
+<span class="comment"># (token'ı iptal et, şifreyi değiştir)</span></div>
+
+                    <p>
+                        <strong>Signed Commits — GPG ile İmzalama:</strong>
+                        Git, kullanıcı adı ve e-postayı doğrulamaz — herkes istediği ismi yazabilir.
+                        GPG imzalama, commit'lerinizin gerçekten sizden geldiğini kriptografik
+                        olarak kanıtlar. GitHub'da imzalı commit'ler yeşil "Verified" rozeti alır.
+                    </p>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button"><span class="comment"># GPG anahtar listesi</span>
+<span class="cmd">gpg</span> <span class="flag">--list-secret-keys --keyid-format=long</span>
+
+<span class="comment"># Git'e imzalama anahtarını tanıt</span>
+<span class="cmd">git config</span> <span class="flag">--global</span> user.signingkey 3AA5C34371567BD2
+
+<span class="comment"># Her commit'i otomatik imzala</span>
+<span class="cmd">git config</span> <span class="flag">--global</span> commit.gpgsign true
+
+<span class="comment"># Manuel imzalı commit</span>
+<span class="cmd">git commit</span> <span class="flag">-S -m</span> <span class="str">"feat: güvenli özellik"</span></div>
+
+                    <p><strong>Kod sorumluluğunu takip etmek:</strong></p>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button"><span class="comment"># Her satırın kim tarafından, hangi commit'te yazıldığını gör</span>
+<span class="cmd">git blame</span> dosya.js
+
+<span class="comment"># Katkıda bulunanları özetle</span>
+<span class="cmd">git shortlog</span> <span class="flag">-sn</span>
+
+<span class="comment"># Belirli bir metni kimin yazdığını bul</span>
+<span class="cmd">git log</span> <span class="flag">-S</span> <span class="str">"aranacak metin"</span> <span class="flag">--oneline</span></div>
+                </div>
+
+                <!-- 6.7 Git LFS -->
+                <div class="section">
+                    <h3 class="section-title">6.7 — Büyük Dosyalar: Git LFS</h3>
+                    <p>
+                        Git, metin dosyaları için tasarlanmıştır. Büyük binary dosyalar
+                        (görsel, ses, video, ML modelleri, Photoshop dosyaları) depoya
+                        eklendiğinde repo boyutu şişer ve her clone yavaşlar.
+                        <strong>Git LFS (Large File Storage)</strong> bu dosyaları
+                        ayrı bir depoda saklar, ana repoda yalnızca küçük bir pointer bırakır.
+                    </p>
+
+                    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Kopyala</button><span class="comment"># LFS kurulumu (bir kez)</span>
+<span class="cmd">git lfs install</span>
+
+<span class="comment"># Hangi dosya türlerini LFS ile takip et</span>
+<span class="cmd">git lfs track</span> <span class="str">"*.psd"</span>
+<span class="cmd">git lfs track</span> <span class="str">"*.mp4"</span>
+<span class="cmd">git lfs track</span> <span class="str">"*.bin"</span>
+
+<span class="comment"># .gitattributes güncellendi — commit et</span>
+<span class="cmd">git add</span> .gitattributes
+<span class="cmd">git commit</span> <span class="flag">-m</span> <span class="str">"chore: LFS takibi eklendi"</span>
+
+<span class="comment"># LFS ile takip edilen dosyaları listele</span>
+<span class="cmd">git lfs ls-files</span></div>
+
+                    <div class="note">
+                        <strong>Not</strong>
+                        GitHub'da LFS depolama ve bant genişliği kotaları vardır.
+                        Ücretsiz hesapta 1 GB depolama ve 1 GB/ay bant genişliği verilir.
+                        Büyük projelerde ücretli plan gerekebilir.
+                    </div>
+                </div>
+
+                <!-- 6.8 Özet -->
+                <div class="section">
+                    <h3 class="section-title">6.8 — Özet ve Hızlı Başvuru</h3>
+                    <table class="cmd-table">
+                        <thead>
+                            <tr>
+                                <th>Konu</th>
+                                <th>Önemli Nokta</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Dal Stratejisi</td><td>Ekip büyüklüğüne göre Git Flow, GitHub Flow veya Trunk-based seç</td></tr>
+                            <tr><td>git tag -a</td><td>Annotated tag resmi sürümler için; SemVer standardını kullan</td></tr>
+                            <tr><td>Git Hooks</td><td>pre-commit ile kaliteyi zorla; Husky ile ekiple paylaş</td></tr>
+                            <tr><td>Submodule</td><td>Bağımlı repolar için güçlü ama dikkat ister; --recurse-submodules unutma</td></tr>
+                            <tr><td>.gitignore</td><td>.env, node_modules, build klasörleri asla commit'lenmemeli</td></tr>
+                            <tr><td>Güvenlik</td><td>Secret commit'leme — en kritik hata. GPG ile commit imzala.</td></tr>
+                            <tr><td>Git LFS</td><td>Binary ve büyük dosyalar için; clone boyutunu küçük tutar</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <!-- ── FOOTER ── -->
+            <footer class="handbook-footer">
+                <span class="footer-brand">Git El Kitabı</span>
+                <span>v1.0 — Tamamlandı</span>
+            </footer>
+
+        </div>
+    </main>
+
+    <!-- ══ JAVASCRIPT — Stage 8 ══ -->
+    <script>
+    (() => {
+        /* ── Reading progress bar ── */
+        const progressBar = document.getElementById('progressBar');
+        const backToTop   = document.getElementById('backToTop');
+        const mobileProgress = document.getElementById('mobileProgress');
+
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            const total = document.documentElement.scrollHeight - window.innerHeight;
+            const pct = total > 0 ? (scrolled / total * 100) : 0;
+            progressBar.style.width = pct + '%';
+            if (mobileProgress) mobileProgress.textContent = Math.round(pct) + '%';
+            backToTop.classList.toggle('visible', scrolled > 400);
+        }, { passive: true });
+
+        backToTop.addEventListener('click', () =>
+            window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+        /* ── Active sidebar link via IntersectionObserver ── */
+        const chapters  = document.querySelectorAll('.chapter[id], .toc-section[id], .cover[id]');
+        const navLinks  = document.querySelectorAll('.sidebar-nav a');
+
+        const chapterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                const id = entry.target.id;
+                navLinks.forEach(a => {
+                    a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+                });
+                updateChapterDots(id);
+            });
+        }, { rootMargin: '-10% 0px -60% 0px' });
+
+        chapters.forEach(c => chapterObserver.observe(c));
+
+        /* ── Chapter section progress dots ── */
+        const chapterSectionCounts = {
+            'bolum-1': 5, 'bolum-2': 8, 'bolum-3': 7,
+            'bolum-4': 5, 'bolum-5': 7, 'bolum-6': 8
+        };
+        const visitedSections = {};
+
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                const chapter = entry.target.closest('.chapter');
+                if (!chapter) return;
+                const cid = chapter.id;
+                const sections = chapter.querySelectorAll('.section');
+                const idx = Array.from(sections).indexOf(entry.target);
+                if (!visitedSections[cid]) visitedSections[cid] = new Set();
+                visitedSections[cid].add(idx);
+                paintDots(cid, sections.length);
+            });
+        }, { threshold: 0.3 });
+
+        document.querySelectorAll('.section').forEach(s => sectionObserver.observe(s));
+
+        function paintDots(cid, total) {
+            const prog = document.getElementById('prog-' + cid.replace('bolum-', ''));
+            if (!prog) return;
+            const dots = prog.querySelectorAll('.dot');
+            const done = visitedSections[cid] ? visitedSections[cid].size : 0;
+            dots.forEach((dot, i) => dot.classList.toggle('done', i < done));
+        }
+
+        function updateChapterDots(id) { /* triggered on chapter enter */ }
+
+        /* ── Copy button ── */
+        window.copyCode = function(btn) {
+            const block = btn.parentElement;
+            const text = Array.from(block.childNodes)
+                .filter(n => n.nodeName !== 'BUTTON')
+                .map(n => n.textContent)
+                .join('')
+                .trim();
+            navigator.clipboard.writeText(text).then(() => {
+                btn.textContent = '✓ Kopyalandı';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = 'Kopyala';
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(() => {
+                /* fallback for non-secure contexts */
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                btn.textContent = '✓ Kopyalandı';
+                btn.classList.add('copied');
+                setTimeout(() => { btn.textContent = 'Kopyala'; btn.classList.remove('copied'); }, 2000);
+            });
+        };
+
+        /* ── Search ── */
+        const searchInput  = document.getElementById('searchInput');
+        const searchClear  = document.getElementById('searchClear');
+        const searchCount  = document.getElementById('searchCount');
+        let currentMatches = [];
+        let matchIndex     = 0;
+
+        function clearHighlights() {
+            document.querySelectorAll('.highlight-match').forEach(el => {
+                const parent = el.parentNode;
+                parent.replaceChild(document.createTextNode(el.textContent), el);
+                parent.normalize();
+            });
+            currentMatches = [];
+            matchIndex = 0;
+        }
+
+        function doSearch(query) {
+            clearHighlights();
+            searchClear.classList.toggle('visible', query.length > 0);
+            if (query.trim().length < 2) { searchCount.textContent = ''; return; }
+
+            const walker = document.createTreeWalker(
+                document.querySelector('.main'),
+                NodeFilter.SHOW_TEXT,
+                { acceptNode: n => {
+                    const p = n.parentElement;
+                    if (p.closest('.sidebar') || p.closest('.progress-strip')) return NodeFilter.FILTER_REJECT;
+                    if (p.nodeName === 'SCRIPT' || p.nodeName === 'STYLE') return NodeFilter.FILTER_REJECT;
+                    return n.textContent.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+                }}
+            );
+
+            const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+            const nodes = [];
+            let node;
+            while ((node = walker.nextNode())) nodes.push(node);
+
+            nodes.forEach(textNode => {
+                if (!regex.test(textNode.textContent)) return;
+                regex.lastIndex = 0;
+                const frag = document.createDocumentFragment();
+                let last = 0, m;
+                while ((m = regex.exec(textNode.textContent)) !== null) {
+                    frag.appendChild(document.createTextNode(textNode.textContent.slice(last, m.index)));
+                    const mark = document.createElement('mark');
+                    mark.className = 'highlight-match';
+                    mark.textContent = m[0];
+                    frag.appendChild(mark);
+                    currentMatches.push(mark);
+                    last = m.index + m[0].length;
+                }
+                frag.appendChild(document.createTextNode(textNode.textContent.slice(last)));
+                textNode.parentNode.replaceChild(frag, textNode);
+            });
+
+            if (currentMatches.length) {
+                searchCount.textContent = currentMatches.length + ' sonuç bulundu';
+                scrollToMatch(0);
+            } else {
+                searchCount.textContent = 'Sonuç bulunamadı';
+            }
+        }
+
+        function scrollToMatch(idx) {
+            if (!currentMatches.length) return;
+            currentMatches.forEach(m => m.style.outline = '');
+            matchIndex = (idx + currentMatches.length) % currentMatches.length;
+            const el = currentMatches[matchIndex];
+            el.style.outline = '2px solid var(--red)';
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        let debounce;
+        searchInput.addEventListener('input', e => {
+            clearTimeout(debounce);
+            debounce = setTimeout(() => doSearch(e.target.value), 250);
+        });
+
+        searchClear.addEventListener('click', () => {
+            searchInput.value = '';
+            clearHighlights();
+            searchCount.textContent = '';
+            searchClear.classList.remove('visible');
+            searchInput.focus();
+        });
+
+        /* ── Keyboard shortcuts ── */
+        document.addEventListener('keydown', e => {
+            /* / → focus search */
+            if (e.key === '/' && document.activeElement !== searchInput) {
+                e.preventDefault();
+                searchInput.focus();
+                searchInput.select();
+            }
+            /* Esc → clear search */
+            if (e.key === 'Escape' && document.activeElement === searchInput) {
+                searchClear.click();
+                searchInput.blur();
+            }
+            /* Enter / Shift+Enter → next / prev match */
+            if (e.key === 'Enter' && document.activeElement === searchInput) {
+                e.preventDefault();
+                scrollToMatch(matchIndex + (e.shiftKey ? -1 : 1));
+            }
+            /* Arrow keys for chapter navigation */
+            if (e.key === 'ArrowDown' && e.altKey) jumpChapter(1);
+            if (e.key === 'ArrowUp'   && e.altKey) jumpChapter(-1);
+        });
+
+        const chapterIds = ['cover','toc','bolum-1','bolum-2','bolum-3','bolum-4','bolum-5','bolum-6'];
+        function jumpChapter(dir) {
+            const active = document.querySelector('.sidebar-nav a.active');
+            if (!active) return;
+            const href = active.getAttribute('href').slice(1);
+            const idx  = chapterIds.indexOf(href);
+            const next = chapterIds[idx + dir];
+            if (next) document.getElementById(next)?.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        /* ── Mobile hamburger ── */
+        const hamburger = document.getElementById('hamburger');
+        const sidebar   = document.getElementById('sidebar');
+        if (hamburger && sidebar) {
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('open');
+                sidebar.classList.toggle('sidebar-open');
+            });
+            document.addEventListener('click', e => {
+                if (!sidebar.contains(e.target) && !hamburger.contains(e.target)) {
+                    hamburger.classList.remove('open');
+                    sidebar.classList.remove('sidebar-open');
+                }
+            });
+        }
+
+        /* ── Theme toggle ── */
+        const themeToggle = document.getElementById('themeToggle');
+        const themeLabel  = document.getElementById('themeLabel');
+        const saved = localStorage.getItem('git-handbook-theme') || 'dark';
+        applyTheme(saved);
+
+        themeToggle.addEventListener('click', () => {
+            const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            applyTheme(next);
+            localStorage.setItem('git-handbook-theme', next);
+        });
+
+        themeToggle.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); themeToggle.click(); }
+        });
+
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            if (themeLabel) themeLabel.textContent = theme === 'light' ? 'AÇIK MOD' : 'KOYU MOD';
+        }
+
+        /* ── Section anchor links ── */
+        document.querySelectorAll('.section-title').forEach(title => {
+            const text = title.textContent.trim();
+            const id = 'sec-' + text.toLowerCase().replace(/[^a-z0-9ğüşıöç]+/gi, '-').slice(0, 40);
+            title.id = id;
+            const anchor = document.createElement('a');
+            anchor.className = 'anchor';
+            anchor.href = '#' + id;
+            anchor.textContent = '#';
+            anchor.title = 'Bu bölüme bağlantı kopyala';
+            anchor.addEventListener('click', e => {
+                e.preventDefault();
+                navigator.clipboard.writeText(location.origin + location.pathname + '#' + id)
+                    .catch(() => {});
+                history.pushState(null, '', '#' + id);
+                title.scrollIntoView({ behavior: 'smooth' });
+            });
+            title.prepend(anchor);
+        });
+
+        /* ── Responsive sidebar ── */
+        const mq = window.matchMedia('(max-width: 900px)');
+        function handleMQ(e) {
+            document.getElementById('mobileBar').style.display = e.matches ? 'flex' : 'none';
+            if (!e.matches) {
+                sidebar.classList.remove('sidebar-open');
+                hamburger?.classList.remove('open');
+            }
+        }
+        mq.addEventListener('change', handleMQ);
+        handleMQ(mq);
+
+        /* ── i18n — Language System ── */
+        const i18n = {
+            tr: {
+                /* sidebar */
+                'nav-contents': 'İçindekiler',
+                'nav-cover':    'Kapak',
+                'nav-toc':      'İçindekiler',
+                'nav-chapters': 'Bölümler',
+                'ch1': "Git'e Giriş",
+                'ch2': 'Temel Komutlar',
+                'ch3': 'Uzak Depolar',
+                'ch4': 'Dallar ve Birleştirme',
+                'ch5': 'İleri Teknikler',
+                'ch6': 'Profesyonel Akışlar',
+                'search':   'ara',
+                'close':    'kapat',
+                'chapters': 'bölümler arası',
+                /* search */
+                'search-placeholder': 'Ara... (/ kısayolu)',
+                'search-found':       ' sonuç bulundu',
+                'search-none':        'Sonuç bulunamadı',
+                /* copy buttons */
+                'copy':     'Kopyala',
+                'copied':   '✓ Kopyalandı',
+                /* theme */
+                'dark-mode':  'KOYU MOD',
+                'light-mode': 'AÇIK MOD',
+                /* cover */
+                'cover-eyebrow': 'Kapsamlı Teknik Rehber',
+                'cover-title-accent': 'El',
+                'cover-desc': 'Temel kavramlardan profesyonel iş akışlarına kadar, adım adım ve pratik örneklerle Git\'i öğrenin.',
+                'cover-meta-chapters': 'Bölüm Sayısı',
+                'cover-meta-level':    'Seviye',
+                'cover-meta-level-val':'Başlangıç → Uzman',
+                'cover-meta-lang':     'Dil',
+                'cover-meta-lang-val': 'Türkçe',
+                /* toc */
+                'toc-eyebrow': 'İçindekiler',
+                'toc-sub1': 'Versiyon kontrolü, kurulum, çalışma mantığı',
+                'toc-sub2': 'init, add, commit, log, diff',
+                'toc-sub3': 'GitHub, clone, push, pull, fetch',
+                'toc-sub4': 'Branch, merge, conflict çözümü',
+                'toc-sub5': 'Rebase, stash, cherry-pick, reset',
+                'toc-sub6': 'Git Flow, hooks, submodules, LFS',
+                /* footer */
+                'footer-center': 'Stage 8 / 8 — Tamamlandı',
+            },
+            en: {
+                /* sidebar */
+                'nav-contents': 'Contents',
+                'nav-cover':    'Cover',
+                'nav-toc':      'Table of Contents',
+                'nav-chapters': 'Chapters',
+                'ch1': 'Introduction to Git',
+                'ch2': 'Core Commands',
+                'ch3': 'Remote Repositories',
+                'ch4': 'Branches & Merging',
+                'ch5': 'Advanced Techniques',
+                'ch6': 'Professional Workflows',
+                'search':   'search',
+                'close':    'close',
+                'chapters': 'jump chapters',
+                /* search */
+                'search-placeholder': 'Search... (/ shortcut)',
+                'search-found':       ' results found',
+                'search-none':        'No results found',
+                /* copy */
+                'copy':   'Copy',
+                'copied': '✓ Copied',
+                /* theme */
+                'dark-mode':  'DARK MODE',
+                'light-mode': 'LIGHT MODE',
+                /* cover */
+                'cover-eyebrow': 'Comprehensive Technical Reference',
+                'cover-title-accent': 'Hand',
+                'cover-desc': 'Learn Git step by step with practical examples — from the very basics to professional workflows.',
+                'cover-meta-chapters': 'Chapters',
+                'cover-meta-level':    'Level',
+                'cover-meta-level-val':'Beginner → Expert',
+                'cover-meta-lang':     'Content Language',
+                'cover-meta-lang-val': 'Turkish',
+                /* toc */
+                'toc-eyebrow': 'Table of Contents',
+                'toc-sub1': 'Version control, installation, how Git works',
+                'toc-sub2': 'init, add, commit, log, diff',
+                'toc-sub3': 'GitHub, clone, push, pull, fetch',
+                'toc-sub4': 'Branch model, merge types, conflict resolution',
+                'toc-sub5': 'Rebase, stash, cherry-pick, reset',
+                'toc-sub6': 'Git Flow, hooks, submodules, LFS',
+                /* footer */
+                'footer-center': 'Complete — All 6 Chapters',
+            }
+        };
+
+        let currentLang = localStorage.getItem('git-handbook-lang') || 'tr';
+
+        window.setLang = function(lang) {
+            currentLang = lang;
+            localStorage.setItem('git-handbook-lang', lang);
+
+            /* button states */
+            document.getElementById('btnTR').classList.toggle('active', lang === 'tr');
+            document.getElementById('btnEN').classList.toggle('active', lang === 'en');
+
+            const t = i18n[lang];
+
+            /* data-i18n spans */
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key] !== undefined) el.textContent = t[key];
+            });
+
+            /* search placeholder */
+            const si = document.getElementById('searchInput');
+            if (si) si.placeholder = t['search-placeholder'];
+
+            /* search count (if visible) */
+            const sc = document.getElementById('searchCount');
+            if (sc && sc.textContent) {
+                const n = sc.getAttribute('data-count');
+                if (n === '0') sc.textContent = t['search-none'];
+                else if (n) sc.textContent = n + t['search-found'];
+            }
+
+            /* copy buttons */
+            document.querySelectorAll('.copy-btn').forEach(btn => {
+                if (!btn.classList.contains('copied')) btn.textContent = t['copy'];
+            });
+
+            /* theme label */
+            const tl = document.getElementById('themeLabel');
+            if (tl) {
+                const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+                tl.textContent = isDark ? t['dark-mode'] : t['light-mode'];
+            }
+
+            /* cover elements */
+            const coverEyebrow = document.querySelector('.cover-eyebrow');
+            if (coverEyebrow) coverEyebrow.textContent = t['cover-eyebrow'];
+
+            const coverAccent = document.querySelector('.cover-title .accent');
+            if (coverAccent) coverAccent.textContent = t['cover-title-accent'];
+
+            const coverDesc = document.querySelector('.cover-desc');
+            if (coverDesc) coverDesc.textContent = t['cover-desc'];
+
+            const metaLabels = document.querySelectorAll('.cover-meta-label');
+            const metaValues = document.querySelectorAll('.cover-meta-value');
+            if (metaLabels[0]) metaLabels[0].textContent = t['cover-meta-chapters'];
+            if (metaLabels[1]) metaLabels[1].textContent = t['cover-meta-level'];
+            if (metaLabels[2]) metaLabels[2].textContent = t['cover-meta-lang'];
+            if (metaValues[1]) metaValues[1].textContent = t['cover-meta-level-val'];
+            if (metaValues[2]) metaValues[2].textContent = t['cover-meta-lang-val'];
+
+            /* TOC eyebrow + subtitles */
+            const tocEyebrow = document.querySelector('.toc-section .section-eyebrow');
+            if (tocEyebrow) tocEyebrow.textContent = t['toc-eyebrow'];
+
+            const tocSubs = document.querySelectorAll('.toc-item-sub');
+            ['toc-sub1','toc-sub2','toc-sub3','toc-sub4','toc-sub5','toc-sub6'].forEach((k,i) => {
+                if (tocSubs[i]) tocSubs[i].textContent = t[k];
+            });
+
+            /* footer center */
+            const footerCenter = document.querySelector('.handbook-footer span:nth-child(2)');
+            if (footerCenter) footerCenter.textContent = t['footer-center'];
+
+            /* html lang attr */
+            document.documentElement.lang = lang;
+        };
+
+        /* init on load */
+        setLang(currentLang);
+
+    })();
+    </script>
+
+</body>
+</html>
